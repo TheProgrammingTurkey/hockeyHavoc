@@ -1,0 +1,9 @@
+make an ending (like when the final week ends)
+
+make a controls / how to play section
+
+might have fixed the corner goal problem by commenting out code in puck.js
+
+make someone stay behind half court if ball is loose (maybe furthest away?)
+
+do some testing with the angles for shooting and checking

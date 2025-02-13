@@ -234,11 +234,11 @@ class Player{
                     }
                 }
                 if(puck.cpuShot){
-                    for(let i = 0; i < players.length; i++){
-                        if(players[i] != puckCarrier){
-                            let circle = new Phaser.Geom.Circle(players[i].position.x+players[i].velocity.x*secondsPassed, players[i].position.y-players[i].velocity.y*secondsPassed, players[i].radius+puck.radius);
+                    for(let i = 0; i < userTeam.length; i++){
+                        if(userTeam[i] != puckCarrier){
+                            let circle = new Phaser.Geom.Circle(userTeam[i].position.x+userTeam[i].velocity.x*secondsPassed, userTeam[i].position.y-userTeam[i].velocity.y*secondsPassed, userTeam[i].radius+puck.radius);
                             let line = new Phaser.Geom.Line(puckCarrier.position.x + Math.cos(puckCarrier.theta*TO_RADIANS) * puckCarrier.radius + puckCarrier.velocity.x*secondsPassed, puckCarrier.position.y - Math.sin(puckCarrier.theta*TO_RADIANS) * puckCarrier.radius + puckCarrier.velocity.y*secondsPassed, puckCarrier.position.x + Math.cos(puckCarrier.theta*TO_RADIANS) * puckCarrier.radius + puckCarrier.velocity.x*secondsPassed, puckCarrier.position.y - Math.sin(puckCarrier.theta*TO_RADIANS) * puckCarrier.radius + puckCarrier.velocity.y*secondsPassed);
-                            Phaser.Geom.Line.SetToAngle(line, line.x2, line.y2, puckCarrier.theta*TO_RADIANS, canvas.height+canvas.width);
+                            Phaser.Geom.Line.SetToAngle(line, line.x2, line.y2, -puckCarrier.theta*TO_RADIANS, canvas.height+canvas.width);
                             if(Phaser.Geom.Intersects.LineToCircle(line, circle)){
                                 puck.cpuShot = false;
                                 return;

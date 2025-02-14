@@ -44,7 +44,6 @@ if(localStorage.getItem("gameType") == "quickPlay"){
     let teams = [["Alberta Afterburn", "ALB"], ["Boston Blades", "BOS"], ["California Golden Bears", "CAL"], ["Columbus Cannons", "COL"], ["Minnesota Ice Fisherman", "MIN"], ["New York Torches", "NYT"], ["Quebec Eskimos", "QCE"], ["Toronto Tridents", "TOR"]];
     homeTeam = [JSON.parse(localStorage.getItem("userTeam"))];
     teams.every(team => {
-        console.log(homeTeam[0][0], team[0])
         if(homeTeam[0][0] == team[0]){
             teams.splice(teams.indexOf(team),1);
             homeTeam = [,team[1]];
@@ -55,7 +54,6 @@ if(localStorage.getItem("gameType") == "quickPlay"){
     awayTeam = [,teams[Math.floor(Math.random()*teams.length)][1]];
 }
 else{
-    console.log(parseInt(localStorage.getItem("gameType")))
     currentWeek = parseInt(localStorage.getItem("currentWeek"));
     thisWeek = JSON.parse(localStorage.getItem("schedule"))[currentWeek];
     awayTeam;

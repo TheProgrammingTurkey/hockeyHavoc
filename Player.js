@@ -111,15 +111,24 @@ class Player{
         if(this.team == "user"){
             if(puck.isControlled){
                 if(this.team != puckCarrier.team){
-                    if(this.canCheck && Math.sqrt((puckCarrier.position.x-this.position.x)*(puckCarrier.position.x-this.position.x)+(puckCarrier.position.y-this.position.y)*(puckCarrier.position.y-this.position.y)) < rink.width/8){
+                    if(this.canCheck){
                         alpha = this.angleTo(puckCarrier);
-                        let angleToPuck = Math.atan2(puckCarrier.position.y-this.position.y, puckCarrier.position.y-this.position.y);
-                        let oppositeSides = [angleToPuck+Math.PI/2, angleToPuck-Math.PI];
-                        let oppositePoints = [new Point(puckCarrier.position.x + Math.cos(oppositeSides[0])*puckCarrier.radius*1.5, puckCarrier.position.y + Math.sin(oppositeSides[0])*puckCarrier.radius*1.5), new Point(puckCarrier.position.x + Math.cos(oppositeSides[1])*puckCarrier.radius*1.5, puckCarrier.position.y + Math.sin(oppositeSides[1])*puckCarrier.radius*1.5)];
-                        if(this.theta < Math.max(this.angleTo(oppositePoints[0]), this.angleTo(oppositePoints[1])) && this.theta > Math.min(this.angleTo(oppositePoints[0]), this.angleTo(oppositePoints[1]))){
-                            this.isChecking = true;
-                            this.canCheck = false;  
-                            this.velocity = new Vec2(Math.cos(this.theta*TO_RADIANS)*canvas.width, -Math.sin(this.theta*TO_RADIANS)*canvas.width);
+                        let angleToPuck = Math.atan2((puckCarrier.position.y-puckCarrier.velocity.y*secondsPassed)-(this.position.y-this.velocity.y*secondsPassed), (puckCarrier.position.x+puckCarrier.velocity.x*secondsPassed)-(this.position.x+this.velocity.x*secondsPassed));
+                        let oppositeSides = [angleToPuck+Math.PI/2, angleToPuck-Math.PI/2];
+                        let oppositePoints = [new Point(puckCarrier.position.x + Math.cos(oppositeSides[0])*puckCarrier.radius*2 + puckCarrier.velocity.x*secondsPassed, puckCarrier.position.y + Math.sin(oppositeSides[0])*puckCarrier.radius*2 + puckCarrier.velocity.y*secondsPassed), new Point(puckCarrier.position.x + Math.cos(oppositeSides[1])*puckCarrier.radius*2 + puckCarrier.velocity.x*secondsPassed, puckCarrier.position.y + Math.sin(oppositeSides[1])*puckCarrier.radius*2 + puckCarrier.velocity.y*secondsPassed)];
+                        if(Math.sign(this.angleTo(oppositePoints[0])) != Math.sign(this.angleTo(oppositePoints[1])) && Math.abs(this.angleTo(oppositePoints[1])-this.angleTo(oppositePoints[0])) > 180){
+                            if(((this.theta < this.angleTo(oppositePoints[0]) && this.theta < this.angleTo(oppositePoints[1])) || (this.theta > this.angleTo(oppositePoints[0]) && this.theta > this.angleTo(oppositePoints[1]))) && Math.sqrt((puckCarrier.position.x-this.position.x)*(puckCarrier.position.x-this.position.x)+(puckCarrier.position.y-this.position.y)*(puckCarrier.position.y-this.position.y)) < rink.width/8){
+                                this.isChecking = true;
+                                this.canCheck = false;  
+                                this.velocity = new Vec2(Math.cos(this.theta*TO_RADIANS)*canvas.width, -Math.sin(this.theta*TO_RADIANS)*canvas.width);
+                            }
+                        }
+                        else{
+                            if(((this.theta < Math.max(this.angleTo(oppositePoints[0]), this.angleTo(oppositePoints[1])) && this.theta > Math.min(this.angleTo(oppositePoints[0]), this.angleTo(oppositePoints[1]))) || (this.theta > Math.max(this.angleTo(oppositePoints[0]), this.angleTo(oppositePoints[1])) && this.theta < Math.min(this.angleTo(oppositePoints[0]), this.angleTo(oppositePoints[1])))) && Math.sqrt((puckCarrier.position.x-this.position.x)*(puckCarrier.position.x-this.position.x)+(puckCarrier.position.y-this.position.y)*(puckCarrier.position.y-this.position.y)) < rink.width/8){
+                                this.isChecking = true;
+                                this.canCheck = false;  
+                                this.velocity = new Vec2(Math.cos(this.theta*TO_RADIANS)*canvas.width, -Math.sin(this.theta*TO_RADIANS)*canvas.width);
+                            }
                         }
                     }
                     else{
@@ -176,15 +185,24 @@ class Player{
         else{
             if(puck.isControlled && this != puckCarrier){
                 if(this.team != puckCarrier.team){
-                    if(this.canCheck && Math.sqrt((puckCarrier.position.x-this.position.x)*(puckCarrier.position.x-this.position.x)+(puckCarrier.position.y-this.position.y)*(puckCarrier.position.y-this.position.y)) < rink.width/8){
+                    if(this.canCheck){
                         alpha = this.angleTo(puckCarrier);
-                        let angleToPuck = Math.atan2(puckCarrier.position.y-this.position.y, puckCarrier.position.y-this.position.y);
-                        let oppositeSides = [angleToPuck+Math.PI/2, angleToPuck-Math.PI];
-                        let oppositePoints = [new Point(puckCarrier.position.x + Math.cos(oppositeSides[0])*puckCarrier.radius*1.5, puckCarrier.position.y + Math.sin(oppositeSides[0])*puckCarrier.radius*1.5), new Point(puckCarrier.position.x + Math.cos(oppositeSides[1])*puckCarrier.radius*1.5, puckCarrier.position.y + Math.sin(oppositeSides[1])*puckCarrier.radius*1.5)];
-                        if(this.theta < Math.max(this.angleTo(oppositePoints[0]), this.angleTo(oppositePoints[1])) && this.theta > Math.min(this.angleTo(oppositePoints[0]), this.angleTo(oppositePoints[1]))){
-                            this.isChecking = true;
-                            this.canCheck = false;  
-                            this.velocity = new Vec2(Math.cos(this.theta*TO_RADIANS)*canvas.width, -Math.sin(this.theta*TO_RADIANS)*canvas.width);
+                        let angleToPuck = Math.atan2((puckCarrier.position.y-puckCarrier.velocity.y*secondsPassed)-(this.position.y-this.velocity.y*secondsPassed), (puckCarrier.position.x+puckCarrier.velocity.x*secondsPassed)-(this.position.x+this.velocity.x*secondsPassed));
+                        let oppositeSides = [angleToPuck+Math.PI/2, angleToPuck-Math.PI/2];
+                        let oppositePoints = [new Point(puckCarrier.position.x + Math.cos(oppositeSides[0])*puckCarrier.radius*2 + puckCarrier.velocity.x*secondsPassed, puckCarrier.position.y + Math.sin(oppositeSides[0])*puckCarrier.radius*2 + puckCarrier.velocity.y*secondsPassed), new Point(puckCarrier.position.x + Math.cos(oppositeSides[1])*puckCarrier.radius*2 + puckCarrier.velocity.x*secondsPassed, puckCarrier.position.y + Math.sin(oppositeSides[1])*puckCarrier.radius*2 + puckCarrier.velocity.y*secondsPassed)];
+                        if(Math.sign(this.angleTo(oppositePoints[0])) != Math.sign(this.angleTo(oppositePoints[1])) && Math.abs(this.angleTo(oppositePoints[1])-this.angleTo(oppositePoints[0])) > 180){
+                            if(((this.theta < this.angleTo(oppositePoints[0]) && this.theta < this.angleTo(oppositePoints[1])) || (this.theta > this.angleTo(oppositePoints[0]) && this.theta > this.angleTo(oppositePoints[1]))) && Math.sqrt((puckCarrier.position.x-this.position.x)*(puckCarrier.position.x-this.position.x)+(puckCarrier.position.y-this.position.y)*(puckCarrier.position.y-this.position.y)) < rink.width/8){
+                                this.isChecking = true;
+                                this.canCheck = false;  
+                                this.velocity = new Vec2(Math.cos(this.theta*TO_RADIANS)*canvas.width, -Math.sin(this.theta*TO_RADIANS)*canvas.width);
+                            }
+                        }
+                        else{
+                            if(((this.theta < Math.max(this.angleTo(oppositePoints[0]), this.angleTo(oppositePoints[1])) && this.theta > Math.min(this.angleTo(oppositePoints[0]), this.angleTo(oppositePoints[1]))) || (this.theta > Math.max(this.angleTo(oppositePoints[0]), this.angleTo(oppositePoints[1])) && this.theta < Math.min(this.angleTo(oppositePoints[0]), this.angleTo(oppositePoints[1])))) && Math.sqrt((puckCarrier.position.x-this.position.x)*(puckCarrier.position.x-this.position.x)+(puckCarrier.position.y-this.position.y)*(puckCarrier.position.y-this.position.y)) < rink.width/8){
+                                this.isChecking = true;
+                                this.canCheck = false;  
+                                this.velocity = new Vec2(Math.cos(this.theta*TO_RADIANS)*canvas.width, -Math.sin(this.theta*TO_RADIANS)*canvas.width);
+                            }
                         }
                     }
                     else{

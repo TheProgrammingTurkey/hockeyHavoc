@@ -295,7 +295,7 @@ function displayStandings(){
     }
 }
 function pickSeasonTeam(){
-    if(localStorage.getItem("currentWeek") !== null && localStorage.getItem("currentWeek") !== 0){
+    if(localStorage.getItem("currentWeek") !== null && localStorage.getItem("currentWeek") != 0){
         localStorage.setItem("gameType", "season");
         document.location.href="standings.html";
     }

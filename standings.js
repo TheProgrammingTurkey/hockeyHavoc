@@ -198,7 +198,7 @@ function displayWeekSchedule(){
                     localStorage.removeItem("standings");
                     localStorage.removeItem("gameType");
                     localStorage.removeItem("userTeam");
-                    document.location.href = "/index.html";
+                    document.location.href = "index.html";
                 };
             }
         }
@@ -297,7 +297,7 @@ function displayStandings(){
 function pickSeasonTeam(){
     if(localStorage.getItem("currentWeek") !== null && localStorage.getItem("currentWeek") !== 0){
         localStorage.setItem("gameType", "season");
-        document.location.href="/standings.html";
+        document.location.href="standings.html";
     }
     else{
         seasonTeamSelect.style.display = "block";
@@ -338,5 +338,5 @@ function goToGame(){;
     localStorage.setItem("currentWeek", parseInt(currentWeek));
     localStorage.setItem("standings", JSON.stringify(allStats));
     localStorage.setItem("gameType", "season");
-    document.location.href = "/game.html";
+    document.location.href = "game.html";
 }

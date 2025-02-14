@@ -82,8 +82,6 @@ else{
                         awayCPU = i;
                     }
                 }
-                // let cpuResult = Math.random()*(allStats[homeCPU][4]+allStats[awayCPU][4])*1.2;
-                // console.log(allStats[homeCPU][4], allStats[homeCPU][4], cpuResult)
                 let strength = 6;
                 let logRatio = Math.log(allStats[homeCPU][4] / allStats[homeCPU][4]);
                 let winProbA = 1 / (1 + Math.exp(-strength * logRatio));
@@ -141,7 +139,6 @@ function generateMatchSchedule(teams) {
                         awayTeam: shuffledTeams[shuffledTeams.length - 1 - k],
                         homeScore: "No Score",
                         awayScore: "No Score"
-                        //venue: `Venue ${k + 1}`,  //for arena name if we ever get to it
                     };
                     roundMatches.push(match);
                 }
@@ -151,7 +148,6 @@ function generateMatchSchedule(teams) {
                         awayTeam: shuffledTeams[k],
                         homeScore: "No Score",
                         awayScore: "No Score"
-                        //venue: `Venue ${k + 1}`,  //for arena name if we ever get to it
                     };
                     roundMatches.push(match);
                 }
@@ -173,6 +169,41 @@ function shuffleArray(array) {
     return array;
 }
 function displayWeekSchedule(){
+    if(currentWeek >= 28){
+        let sortedAllStats = allStats.slice();
+        sortedAllStats.sort((a, b) => {
+            if (a[4] === b[4]) {
+                return a[0].localeCompare(b[0]);
+            }
+            return b[4] - a[4];
+        });
+        for(let i = 0; i < sortedAllStats.length; i++){
+            if(sortedAllStats[i][0] == userTeam[0]){
+                if(i == 0){
+                    document.getElementById("nextOpponent").innerHTML = "You Finished " + (i+1) + "st place";
+                }
+                else if(i == 0){
+                    document.getElementById("nextOpponent").innerHTML = "You Finished " + (i+1) + "nd place";
+                }
+                else if(i == 0){
+                    document.getElementById("nextOpponent").innerHTML = "You Finished " + (i+1) + "rd place";
+                }
+                else{
+                    document.getElementById("nextOpponent").innerHTML = "You Finished " + (i+1) + "th place";
+                }
+                document.getElementById("linkNext").onclick = function() {
+                    localStorage.removeItem("result");
+                    localStorage.removeItem("schedule");
+                    localStorage.removeItem("currentWeek");
+                    localStorage.removeItem("standings");
+                    localStorage.removeItem("gameType");
+                    localStorage.removeItem("userTeam");
+                    document.location.href = "/index.html";
+                };
+            }
+        }
+        return;
+    }
     weekScheduleHeader.innerHTML = `Game ${parseInt(currentWeek)+1} Schedule`;
     for(let i = 0; i < schedule[currentWeek].length; i++){
         let row = document.createElement("tr");

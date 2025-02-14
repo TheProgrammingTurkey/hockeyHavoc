@@ -228,10 +228,10 @@ class Puck{
                 localStorage.setItem("result", JSON.stringify([tempHome, 2, puck.leftScore, tempAway, 2, puck.rightScore]));
             }
             localStorage.setItem("currentWeek", currentWeek+1);
-            document.location.href = "standings.html";
+            document.location.href = "/standings.html";
         }
         else{
-            document.location.href = "index.html";
+            document.location.href = "/index.html";
         }
     }
     //puck to wall and corner collisions

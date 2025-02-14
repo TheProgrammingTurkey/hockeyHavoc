@@ -295,11 +295,17 @@ function displayStandings(){
     }
 }
 function pickSeasonTeam(){
-    seasonTeamSelect.style.display = "block";
-    quickPlayTeamSelect.style.display = "none";
-    selectTeamName = document.getElementById("seasonTeamNameSelect");
-    selectTeamName.innerHTML = userTeam[0];
-    localStorage.setItem("gameType", "season");
+    if(localStorage.getItem("currentWeek") !== null && localStorage.getItem("currentWeek") !== 0){
+        localStorage.setItem("gameType", "season");
+        document.location.href="/standings.html";
+    }
+    else{
+        seasonTeamSelect.style.display = "block";
+        quickPlayTeamSelect.style.display = "none";
+        selectTeamName = document.getElementById("seasonTeamNameSelect");
+        selectTeamName.innerHTML = userTeam[0];
+        localStorage.setItem("gameType", "season");
+    }
 }
 function pickQuickPlayTeam(){
     seasonTeamSelect.style.display = "none";

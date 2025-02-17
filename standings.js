@@ -306,6 +306,7 @@ function pickSeasonTeam(){
         selectTeamName.innerHTML = userTeam[0];
         localStorage.setItem("gameType", "season");
     }
+    document.getElementById("showInstructionsButton").style.display = "none";
 }
 function pickQuickPlayTeam(){
     seasonTeamSelect.style.display = "none";
@@ -313,6 +314,7 @@ function pickQuickPlayTeam(){
     selectTeamName = document.getElementById("QPTeamNameSelect");
     selectTeamName.innerHTML = userTeam[0];
     localStorage.setItem("gameType", "quickPlay");
+    document.getElementById("showInstructionsButton").style.display = "none";
 }
 function scrollRightTeams(){
     let index = allStats.indexOf(userTeam)+1;
@@ -332,11 +334,17 @@ function scrollLeftTeams(){
     userTeam = allStats[index];
     localStorage.setItem("userTeam", JSON.stringify(allStats[index]));
 }
-function goToGame(){;
+function goToGame(){
     localStorage.removeItem("result");
     localStorage.setItem("schedule", JSON.stringify(schedule));
     localStorage.setItem("currentWeek", parseInt(currentWeek));
     localStorage.setItem("standings", JSON.stringify(allStats));
     localStorage.setItem("gameType", "season");
     document.location.href = "game.html";
+}
+function showInstructions(){
+    document.getElementById("instructions").style.display = "block";
+}
+function hideInstructions(){
+    document.getElementById("instructions").style.display = "none";
 }

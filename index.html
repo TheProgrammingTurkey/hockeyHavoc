@@ -33,6 +33,24 @@
         </div>
         <a href="game.html">Select Team</a>
     </div>
-    <p>ALPHA <br> Controls/Instructions Coming Soon</p>
+    <p id="information">V 1.0.0</p>
+    <button onclick = "showInstructions()" id="showInstructionsButton">Instructions</button>
+    <div id="instructions">
+        <button id = "x" onclick = "hideInstructions()">X</button>
+        <h2>Controls</h2>
+        <p>Up Arrow: Move Forward</p>
+        <p>Down Arrow: Move Backward</p>
+        <p>Left Arrow: Turn Left</p>
+        <p>Right Arrow: Turn Right</p>
+        <p>Control: Body Check</p>
+        <p>Shift: Switch Players</p>
+        <p>Space: Shoot/Pass, Face off</p>
+        <h2>Instructions</h2>
+        <p>User Team is the Red Team</p>
+        <p>User Team Shoots to the Right</p>
+        <p>Blue Outline is User</p>
+        <p>Red Outline is the User's Teammates</p>
+        <p>Green Outline is the CPU</p>
+    </div>
 </body>
 </html>

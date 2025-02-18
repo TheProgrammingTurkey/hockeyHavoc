@@ -1,3 +1,4 @@
+// For the puck collision function in Puck.js
 const intersectionType = {
     None: 0,
     Simple: 1,

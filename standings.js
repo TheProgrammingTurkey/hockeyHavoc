@@ -8,6 +8,7 @@ let seasonTeamSelect = document.getElementById("seasonTeamSelect");
 let quickPlayTeamSelect = document.getElementById("quickPlayTeamSelect");
 let selectTeamName;
 
+//Setup the Standings
 let stats;
 if (localStorage.getItem("standings") === null){
     stats = Array(8).fill().map(() => Array(3).fill(0));
@@ -24,6 +25,7 @@ else{
     }
 }
 
+//Setup the teams
 let headerStats = ["", "Team Name", "Wins", "Losses", "Ties", "Points"];
 let albertaStats = ["Alberta Afterburn", stats[0][0], stats[0][1], stats[0][2], 0];
 let bostonStats = ["Boston Blades", stats[1][0], stats[1][1], stats[1][2], 0];
@@ -42,11 +44,13 @@ let newYorkInfo = ["New York Torches", "NYT"];
 let quebecInfo = ["Quebec Eskimos", "QCE"];
 let torontoInfo = ["Toronto Tridents", "TOR"];
 let allStats = [albertaStats, bostonStats, californiaStats, columbusStats, minnesotaStats, newYorkStats, quebecStats, torontoStats];
+//Calculate the points
 for(let i = 0; i < 8; i++){
     allStats[i][4] = parseInt(allStats[i][1])*2+parseInt(allStats[i][3]);
 }
 let allInfo = [albertaInfo, bostonInfo, californiaInfo, columbusInfo, minnesotaInfo, newYorkInfo, quebecInfo, torontoInfo];
 let userTeam;
+//Find what team is the user's
 if (localStorage.getItem("userTeam") === null){
     userTeam = allStats[0];
     localStorage.setItem("userTeam", JSON.stringify(allStats[0]));
@@ -54,7 +58,7 @@ if (localStorage.getItem("userTeam") === null){
 else{
     userTeam = JSON.parse(localStorage.getItem("userTeam"));
 }
-
+//Setup the schedule
 let schedule;
 if (localStorage.getItem("schedule") === null){
     schedule = generateMatchSchedule(allInfo.slice())
@@ -63,12 +67,14 @@ if (localStorage.getItem("schedule") === null){
 else{
     schedule = JSON.parse(localStorage.getItem("schedule"));
 }
+//Find what week it is
 let currentWeek;
 if (localStorage.getItem("currentWeek") === null || localStorage.getItem("currentWeek") == 0){
     currentWeek = 0;
 }
 else{
     currentWeek = (localStorage.getItem("currentWeek"));
+    //Calculate what happened in the previous week of games
     if(localStorage.getItem("result") !== null){
         schedule[currentWeek-1].forEach(game => {
             if(game.awayTeam[0] != userTeam[0] && game.homeTeam[0] != userTeam[0]){
@@ -169,6 +175,7 @@ function shuffleArray(array) {
     return array;
 }
 function displayWeekSchedule(){
+    //If the season is over
     if(currentWeek >= 28){
         let sortedAllStats = allStats.slice();
         sortedAllStats.sort((a, b) => {
@@ -179,6 +186,7 @@ function displayWeekSchedule(){
         });
         for(let i = 0; i < sortedAllStats.length; i++){
             if(sortedAllStats[i][0] == userTeam[0]){
+                //Display the finishing place
                 if(i == 0){
                     document.getElementById("nextOpponent").innerHTML = "You Finished " + (i+1) + "st place";
                 }
@@ -191,6 +199,7 @@ function displayWeekSchedule(){
                 else{
                     document.getElementById("nextOpponent").innerHTML = "You Finished " + (i+1) + "th place";
                 }
+                //reset the local storage entries
                 document.getElementById("linkNext").onclick = function() {
                     localStorage.removeItem("result");
                     localStorage.removeItem("schedule");
@@ -204,14 +213,17 @@ function displayWeekSchedule(){
         }
         return;
     }
+    //If the season is still going on
     weekScheduleHeader.innerHTML = `Game ${parseInt(currentWeek)+1} Schedule`;
     for(let i = 0; i < schedule[currentWeek].length; i++){
         let row = document.createElement("tr");
         let game = document.createElement("td");
+        //if the user controls the home team
         if(schedule[currentWeek][i].homeTeam[0] == userTeam[0]){
             game.innerHTML = schedule[currentWeek][i].homeTeam[0].bold() + " Vs. " + schedule[currentWeek][i].awayTeam[0];
             nextOpponent.innerHTML = "Next Game is Against The " + schedule[currentWeek][i].awayTeam[0];
         }
+        //if the user controls the away team
         else if(schedule[currentWeek][i].awayTeam[0] == userTeam[0]){
             game.innerHTML = schedule[currentWeek][i].homeTeam[0] + " Vs. " + schedule[currentWeek][i].awayTeam[0].bold();
             nextOpponent.innerHTML = "Next Game is Against The " + schedule[currentWeek][i].homeTeam[0];
@@ -228,8 +240,11 @@ function displayUserSchedule(){
     for(let i = 0; i < userScheduleNumRows; i++){
         let row = document.createElement("tr");
         for(let j = 0; j < Math.ceil(schedule.length/userScheduleNumRows); j++){
+            //Each Game
+
             if(i*Math.ceil(schedule.length/userScheduleNumRows)+j < schedule.length){
                 let game;
+                //Bold the game if its the next one
                 if(i*Math.ceil(schedule.length/userScheduleNumRows)+j == currentWeek){
                     game = document.createElement("th");
                 }
@@ -238,17 +253,21 @@ function displayUserSchedule(){
                 }
                 for(let k = 0; k < allStats.length/2; k++){
                     if(schedule[i*Math.ceil(schedule.length/userScheduleNumRows) + j][k].homeTeam[0] == userTeam[0]){
+                        //Game hasn't happened
                         if(schedule[i*Math.ceil(schedule.length/userScheduleNumRows) + j][k].homeScore == "No Score"){
                             game.innerHTML = "Game " + (i*Math.ceil(schedule.length/userScheduleNumRows) + j+1) +" vs " + schedule[i*Math.ceil(schedule.length/userScheduleNumRows) + j][k].awayTeam[1];
                         }
+                        //Display the score
                         else{
                             game.innerHTML = schedule[i*Math.ceil(schedule.length/userScheduleNumRows) + j][k].homeTeam[1] + " " + schedule[i*Math.ceil(schedule.length/userScheduleNumRows) + j][k].homeScore + "-" + schedule[i*Math.ceil(schedule.length/userScheduleNumRows) + j][k].awayScore + " " + schedule[i*Math.ceil(schedule.length/userScheduleNumRows) + j][k].awayTeam[1];
                         } 
                     }
                     else if(schedule[i*Math.ceil(schedule.length/userScheduleNumRows) + j][k].awayTeam[0] == userTeam[0]){
+                        //Game hasn't happened
                         if(schedule[i*Math.ceil(schedule.length/userScheduleNumRows) + j][k].homeScore == "No Score"){
                             game.innerHTML = "Game " + (i*Math.ceil(schedule.length/userScheduleNumRows) + j+1) +" @ " + schedule[i*Math.ceil(schedule.length/userScheduleNumRows) + j][k].homeTeam[1]; 
                         }
+                        //Display the score
                         else{
                             game.innerHTML = schedule[i*Math.ceil(schedule.length/userScheduleNumRows) + j][k].homeTeam[1] + " " + schedule[i*Math.ceil(schedule.length/userScheduleNumRows) + j][k].homeScore + "-" + schedule[i*Math.ceil(schedule.length/userScheduleNumRows) + j][k].awayScore + " " + schedule[i*Math.ceil(schedule.length/userScheduleNumRows) + j][k].awayTeam[1];
                         }
@@ -261,6 +280,7 @@ function displayUserSchedule(){
     }
 }
 function displayStandings(){
+    //Sort the standings
     let sortedAllStats = allStats.slice();
     sortedAllStats.sort((a, b) => {
         if (a[4] === b[4]) {
@@ -268,12 +288,14 @@ function displayStandings(){
         }
         return b[4] - a[4];
     });
+    //Headers
     let row = document.createElement("tr");
     for(let i = 0; i < headerStats.length; i++){
         let header = document.createElement("th");
         header.innerHTML = headerStats[i];
         row.appendChild(header);
     }
+    //Display the stats
     standingsTable.appendChild(row);
     for(let i = 0; i < sortedAllStats.length; i++){
         row = document.createElement("tr");
@@ -295,10 +317,12 @@ function displayStandings(){
     }
 }
 function pickSeasonTeam(){
+    //If the season hasn't started yet --> pick your team
     if(localStorage.getItem("currentWeek") !== null && localStorage.getItem("currentWeek") != 0){
         localStorage.setItem("gameType", "season");
         document.location.href="standings.html";
     }
+    //Else --> You get your previous team
     else{
         seasonTeamSelect.style.display = "block";
         quickPlayTeamSelect.style.display = "none";

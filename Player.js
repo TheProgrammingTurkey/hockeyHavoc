@@ -1,4 +1,5 @@
 class Player{
+    //Creates each player
     constructor(x, y, theta, img, team){
         this.radius = playerRadius
         this.position = new Vec2(x, y);
@@ -22,6 +23,7 @@ class Player{
         this.canCheck = true;
         this.checkingTime = 0;
     }
+    //Allows every player to move
     movement(){
         let skateX = 0;
         let skateY = 0;
@@ -29,21 +31,22 @@ class Player{
         let dragY = 0;
         let frictionX = 0;
         let frictionY = 0;
-        //turning
+        //Movement if the Player is being controlled by the user
         if(this == userTeam[controlledPlayerNum]){
+            //Allows the user to turn
             if(toggledKeys["ArrowRight"]){
                 this.theta-=this.delta*secondsPassed;
             }
             if(toggledKeys["ArrowLeft"]){
                 this.theta+=this.delta*secondsPassed;
             }
-            //bodycheck
+            //Allows the user to bodycheck
             if(toggledKeys["ControlLeft"] && this.canCheck && (this != puckCarrier || !puck.isControlled)){
                 this.isChecking = true;
                 this.canCheck = false;
                 this.velocity = new Vec2(Math.cos(this.theta*TO_RADIANS)*1.3*(rink.width+rink.x), -Math.sin(this.theta*TO_RADIANS)*1.3*(rink.width+rink.x));
             }
-            //forward/backwards
+            //Allows the user to go forwards and backwards
             if(toggledKeys["ArrowUp"]){
                 skateX = Math.cos(this.theta*TO_RADIANS)*400;
                 skateY = -Math.sin(this.theta*TO_RADIANS)*400;
@@ -53,11 +56,12 @@ class Player{
                 skateY = Math.sin(this.theta*TO_RADIANS)*300;
             } 
         }
+        //CPUs always go forward at full speed
         else{
             skateX = Math.cos(this.theta*TO_RADIANS)*400;
             skateY = -Math.sin(this.theta*TO_RADIANS)*400; 
         }
-        //checking
+        //Checking cooldown
         if(!this.canCheck){
             this.checkingTime+=1*secondsPassed;
             if(this.checkingTime > 5){
@@ -65,6 +69,7 @@ class Player{
                 this.canCheck = true;
             }
         }
+        //If the player is checking and hits the puck carrier, the player checking gets the puck
         if(this.isChecking){
             if(puck.isControlled && colliding(this, puckCarrier)){
                 puckCarrier = this;
@@ -82,7 +87,7 @@ class Player{
                 this.isChecking = false;
             }
         }
-        //ice skating physics
+        //ice skating physics: air drag and friction take away from the skating force
         if(skateX != 0 && skateY !=0){
             dragX = Math.sign(this.velocity.x) * this.velocity.x * this.velocity.x / 1000;
             dragY = Math.sign(this.velocity.y) * this.velocity.y * this.velocity.y / 1000;
@@ -97,6 +102,7 @@ class Player{
         }
         this.forces = new Vec2(skateX-dragX-frictionX, skateY-dragY-frictionY);
         this.velocity.addScale(this.forces, secondsPassed*(rink.width/400));
+        //Keep the player's theta between -180 and 180
         if(this.theta > 180){
             this.theta = this.theta-360;
         }
@@ -106,16 +112,21 @@ class Player{
     }
     //if player is not controlled --> let ai control player
     cpu(){
-        //find angle to where you want to go
+        //angle to desired position
         let alpha;
         if(this.team == "user"){
             if(puck.isControlled){
                 if(this.team != puckCarrier.team){
                     if(this.canCheck){
+                        //angle to puck carrier
                         alpha = this.angleTo(puckCarrier);
+                        //angle to the puck
                         let angleToPuck = Math.atan2((puckCarrier.position.y-puckCarrier.velocity.y*secondsPassed)-(this.position.y-this.velocity.y*secondsPassed), (puckCarrier.position.x+puckCarrier.velocity.x*secondsPassed)-(this.position.x+this.velocity.x*secondsPassed));
+                        //angle to the puck
                         let oppositeSides = [angleToPuck+Math.PI/2, angleToPuck-Math.PI/2];
+                        //calculate the points on the players radius using the angles from the line before
                         let oppositePoints = [new Point(puckCarrier.position.x + Math.cos(oppositeSides[0])*puckCarrier.radius*2 + puckCarrier.velocity.x*secondsPassed, puckCarrier.position.y + Math.sin(oppositeSides[0])*puckCarrier.radius*2 + puckCarrier.velocity.y*secondsPassed), new Point(puckCarrier.position.x + Math.cos(oppositeSides[1])*puckCarrier.radius*2 + puckCarrier.velocity.x*secondsPassed, puckCarrier.position.y + Math.sin(oppositeSides[1])*puckCarrier.radius*2 + puckCarrier.velocity.y*secondsPassed)];
+                        //check if the cpu player is facing the puck carrier and close enough. If so, check them
                         if(Math.sign(this.angleTo(oppositePoints[0])) != Math.sign(this.angleTo(oppositePoints[1])) && Math.abs(this.angleTo(oppositePoints[1])-this.angleTo(oppositePoints[0])) > 180){
                             if(((this.theta < this.angleTo(oppositePoints[0]) && this.theta < this.angleTo(oppositePoints[1])) || (this.theta > this.angleTo(oppositePoints[0]) && this.theta > this.angleTo(oppositePoints[1]))) && Math.sqrt((puckCarrier.position.x-this.position.x)*(puckCarrier.position.x-this.position.x)+(puckCarrier.position.y-this.position.y)*(puckCarrier.position.y-this.position.y)) < rink.width/8){
                                 this.isChecking = true;
@@ -132,10 +143,13 @@ class Player{
                         }
                     }
                     else{
+                        // angle to in between the puck carrier and goal
                         alpha = this.angleTo(new Point(goal1.x+.75*(puckCarrier.position.x-goal1.x), (goal1.y+goal1.height/2)+.75*(puckCarrier.position.y-(goal1.y+goal1.height/2))));
                     }
                 }
+                //if cpu's team is on offense
                 else{
+                    //decide between going to the left or right of the puckCarrier, and is always in between the goal and puck carrier
                     if(controlledPlayerNum == 0){
                         if(userTeam.indexOf(this) == 1){
                             alpha = this.angleTo(new Point(goal2.x-.5*(goal2.x-puckCarrier.position.x), rink.y+.5*(puckCarrier.position.y-rink.y)));
@@ -163,6 +177,7 @@ class Player{
                 }
             }
             else if(puck.position.x > canvas.width/2){
+                //find closest player on the team to the puck
                 let closestDist = Infinity;
                 let closestI;
                 for(let i = 0; i < userTeam.length; i++){
@@ -171,14 +186,17 @@ class Player{
                         closestDist = Math.sqrt((userTeam[i].position.x-puck.position.x)*(userTeam[i].position.x-puck.position.x) + (userTeam[i].position.y-puck.position.y)*(userTeam[i].position.y-puck.position.y));
                     }
                 }
+                //if the cpu is the closest player to the puck on the team --> angle to the puck
                 if(userTeam.indexOf(this) == closestI){
                     alpha = this.angleTo(puck);
                 }   
+                //else --> angle to the the middle of the rink
                 else{
                     alpha = this.angleTo(new Point(goal1.x+.33*(puck.position.x-goal1.x),  (goal1.y+goal1.height/2)+.33*(puck.position.y-(goal1.y+goal1.height/2))));
                 }
             }
             else{
+                //angle to puck
                 alpha = this.angleTo(puck);
             }
         }
@@ -186,10 +204,15 @@ class Player{
             if(puck.isControlled && this != puckCarrier){
                 if(this.team != puckCarrier.team){
                     if(this.canCheck){
+                        //angle to puck carrier
                         alpha = this.angleTo(puckCarrier);
+                        //angle to the puck
                         let angleToPuck = Math.atan2((puckCarrier.position.y-puckCarrier.velocity.y*secondsPassed)-(this.position.y-this.velocity.y*secondsPassed), (puckCarrier.position.x+puckCarrier.velocity.x*secondsPassed)-(this.position.x+this.velocity.x*secondsPassed));
+                        //angle to the puck
                         let oppositeSides = [angleToPuck+Math.PI/2, angleToPuck-Math.PI/2];
+                        //calculate the points on the players radius using the angles from the line before                       
                         let oppositePoints = [new Point(puckCarrier.position.x + Math.cos(oppositeSides[0])*puckCarrier.radius*2 + puckCarrier.velocity.x*secondsPassed, puckCarrier.position.y + Math.sin(oppositeSides[0])*puckCarrier.radius*2 + puckCarrier.velocity.y*secondsPassed), new Point(puckCarrier.position.x + Math.cos(oppositeSides[1])*puckCarrier.radius*2 + puckCarrier.velocity.x*secondsPassed, puckCarrier.position.y + Math.sin(oppositeSides[1])*puckCarrier.radius*2 + puckCarrier.velocity.y*secondsPassed)];
+                        //check if the cpu player is facing the puck carrier and close enough. If so, check them
                         if(Math.sign(this.angleTo(oppositePoints[0])) != Math.sign(this.angleTo(oppositePoints[1])) && Math.abs(this.angleTo(oppositePoints[1])-this.angleTo(oppositePoints[0])) > 180){
                             if(((this.theta < this.angleTo(oppositePoints[0]) && this.theta < this.angleTo(oppositePoints[1])) || (this.theta > this.angleTo(oppositePoints[0]) && this.theta > this.angleTo(oppositePoints[1]))) && Math.sqrt((puckCarrier.position.x-this.position.x)*(puckCarrier.position.x-this.position.x)+(puckCarrier.position.y-this.position.y)*(puckCarrier.position.y-this.position.y)) < rink.width/8){
                                 this.isChecking = true;
@@ -206,10 +229,13 @@ class Player{
                         }
                     }
                     else{
+                        // angle to in between the puck carrier and goal
                         alpha = this.angleTo(new Point(goal2.x+.75*(puckCarrier.position.x-goal2.x), (goal2.y+goal2.height/2)+.75*(puckCarrier.position.y-(goal2.y+goal2.height/2))));
                     }
                 }
+                //if cpu's team is on offense
                 else{
+                    //decide between going to the left or right of the puckCarrier, and is always in between the goal and puck carrier
                     if(cpuTeam.indexOf(puckCarrier) == 0){
                         if(cpuTeam.indexOf(this) == 1){
                             alpha = this.angleTo(new Point(goal1.x+.5*(puckCarrier.position.x-goal1.x), rink.y+.5*(puckCarrier.position.y-rink.y)));
@@ -237,12 +263,15 @@ class Player{
                     }
                 }
             }
+            //allows the cpu's to shoot
             else if(this == puckCarrier && puck.isControlled && !puck.justScored){
+                //if the cpu's y values are between the post's y values
                 if(Math.sign(this.angleTo(new Point(goal1.x, goal1.y+puck.radius))) == Math.sign(this.angleTo(new Point(goal1.x, goal1.y+goal1.height-puck.radius)))){
                     if(this.theta > this.angleTo(new Point(goal1.x, goal1.y+puck.radius)) && this.theta < this.angleTo(new Point(goal1.x, goal1.y+goal1.height-puck.radius))){
                         puck.cpuShot = true;
                     }
                 }
+                //else
                 else{
                     if(this.theta > this.angleTo(new Point(goal1.x, goal1.y+puck.radius)) && this.theta > this.angleTo(new Point(goal1.x, goal1.y+goal1.height-puck.radius))){
                         puck.cpuShot = true;
@@ -251,6 +280,7 @@ class Player{
                         puck.cpuShot = true;
                     }
                 }
+                //check if other players are in the way of the shooting lane
                 if(puck.cpuShot){
                     for(let i = 0; i < userTeam.length; i++){
                         if(userTeam[i] != puckCarrier){
@@ -265,34 +295,44 @@ class Player{
                     }
                     return;
                 }
+                //angle to middle of the net
                 alpha = this.angleTo(new Point(goal1.x, goal1.y+goal1.height/2));
             }
             else{
+                //angle to the puck
                 alpha = this.angleTo(puck);
             }
         }
         //turn to said angle
         this.turnTo(alpha);
     }
+    //find the angle to the desired position
     angleTo(desired){
         return Math.atan2(this.position.y-desired.position.y, desired.position.x-this.position.x)/TO_RADIANS;
     }
+    //turn to the desired angle
     turnTo(alpha){
+        //turn right
         if(alpha-this.theta > this.delta*secondsPassed && alpha-this.theta < 180){
             this.theta+=this.delta*secondsPassed;
         }
+        //turn left
         else if(alpha-this.theta < -this.delta*secondsPassed && alpha-this.theta > -180){
             this.theta-=this.delta*secondsPassed;
         }
+        //turn right
         else if(alpha-this.theta < -180){
             this.theta+=this.delta*secondsPassed;
         }
+        //turn left
         else if(alpha-this.theta > 180){
             this.theta-=this.delta*secondsPassed;
         }
+        //if remaining angle left to turn is smaller than the max turning speed, turn to that angle
         else if(alpha-this.theta < this.delta*secondsPassed && alpha-this.theta > -this.delta*secondsPassed){
             this.theta = alpha;
         }
+        //keep the player's angle they face between -180 and 180
         if(this.theta > 180){
             this.theta = this.theta-360;
         }
@@ -440,25 +480,29 @@ class Player{
                 p.position.y = goal1.y+goal1.height-p.radius-.01;
                 p.velocity.y = -p.velocity.y;
             }
-            // Bounce off of canvas border
+            // Bounce off of the right wall
             if (p.position.x + p.radius >= rink.width && (p.position.y <= goal2.y || p.position.y >= goal2.y+goal2.height)) {
                 p.position.x = rink.width - p.radius;
                 p.velocity.x = -p.velocity.x;
             }
+            // Bounce off of the left wall
             if (p.position.x - p.radius <= rink.x && (p.position.y <= goal1.y || p.position.y >= goal1.y+goal1.height)) {
                 p.position.x = p.radius+rink.x;
                 p.velocity.x = -p.velocity.x;
             }
+            // Bounce off of the bottom wall
             if (p.position.y + p.radius >= rink.height) {
                 p.position.y = rink.height - p.radius;
                 p.velocity.y = -p.velocity.y;
             }
+            // Bounce off of the top wall
             if (p.position.y - p.radius <= rink.y) {
                 p.position.y = p.radius+rink.y;
                 p.velocity.y = -p.velocity.y;
             }
         });
     }
+    //draw all the players
     static draw(){
         for(let i = 0; i < userTeam.length; i++){
             ctx.beginPath();

@@ -13,6 +13,8 @@
         <button onclick="pickSeasonTeam()">Season</button>
         <button onclick="pickQuickPlayTeam()">Quick Play</button>
     </div>
+    <!-- Displays when user clicks the Season button -->
+    <!-- Allows the user to pick their team and start the game -->
     <div class="teamSelect" id="seasonTeamSelect">
         <h2>Team Select</h2>
         <div class="teamScroll">
@@ -23,6 +25,8 @@
         </div>
         <a href="standings.html">Select Team</a>
     </div>
+    <!-- Displays when user clicks the Quick Play button -->
+    <!-- Allows the user to pick their team and start the game -->
     <div class="teamSelect" id="quickPlayTeamSelect">
         <h2>Team Select</h2>
         <div class="teamScroll">
@@ -34,6 +38,7 @@
         <a href="game.html">Select Team</a>
     </div>
     <p id="information">V 1.0.0</p>
+    <!-- Instructions/Controls Popup-->
     <button onclick = "showInstructions()" id="showInstructionsButton">Instructions</button>
     <div id="instructions">
         <button id = "x" onclick = "hideInstructions()">X</button>
@@ -51,6 +56,8 @@
         <p>Blue Outline is User</p>
         <p>Red Outline is the User's Teammates</p>
         <p>Green Outline is the CPU</p>
+        <h2>Face Offs</h2>
+        <p>When the face off circle turns green, press the space bar before your opponent to win the draw</p>
     </div>
 </body>
 </html>

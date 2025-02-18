@@ -6,6 +6,7 @@ let oldTimeStamp = 0;
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+//rink dimensions
 let rink = {
     width: canvas.width-60,
     x: 60,
@@ -21,12 +22,15 @@ else{
     rink.x = (canvas.width-40*(rink.height-rink.y)/17)/2;
     rink.width = canvas.width-(canvas.width-40*(rink.height-rink.y)/17)/2;
 }
+//goal dimensions
+//left
 let goal1 = {
     x: rink.x,
     y: (rink.height+rink.y)/2-50,
     width: 20,
     height: 100
 }
+//right
 let goal2 = {
     x: rink.width,
     y: (rink.height+rink.y)/2-50,
@@ -37,9 +41,11 @@ let goal2 = {
 //teams
 let homeTeam;
 let awayTeam;
+
 let currentWeek;
 let thisWeek
 
+//If the user picked Quick Play, figure out what team is the home team and what team is the away team
 if(localStorage.getItem("gameType") == "quickPlay"){
     let teams = [["Alberta Afterburn", "ALB"], ["Boston Blades", "BOS"], ["California Golden Bears", "CAL"], ["Columbus Cannons", "COL"], ["Minnesota Ice Fisherman", "MIN"], ["New York Torches", "NYT"], ["Quebec Eskimos", "QCE"], ["Toronto Tridents", "TOR"]];
     homeTeam = [JSON.parse(localStorage.getItem("userTeam"))];
@@ -53,6 +59,7 @@ if(localStorage.getItem("gameType") == "quickPlay"){
     });
     awayTeam = [,teams[Math.floor(Math.random()*teams.length)][1]];
 }
+//If the user picked Season, use the schedule to find the away team
 else{
     currentWeek = parseInt(localStorage.getItem("currentWeek"));
     thisWeek = JSON.parse(localStorage.getItem("schedule"))[currentWeek];
@@ -152,6 +159,7 @@ document.addEventListener("keyup", event => {
 });
 
 function update() {
+    //Finding what to put on the timer
     currentTime = new Date().getTime();
     difference = 61000 - (currentTime-startTime);
     if(difference <= 0){
@@ -296,17 +304,21 @@ function drawRink() {
     ctx.lineTo(rink.x, rink.y);
     ctx.stroke();
 
+    //draw the ref if the face off is happening
     if(!playing){
         ctx.drawImage(refIMG, (rink.x+rink.width)/2-40, (rink.height+rink.y)/2-100, 80, 80);
     }
     
+    //draw the players
     Player.draw();
+
+    //draw the puck
     ctx.lineWidth = 1;
     if(puckDropped){
         puck.draw();
     }
 
-    //drawing goal
+    //drawing the goals
     ctx.strokeStyle = "black";
     ctx.beginPath();
     ctx.moveTo(goal2.x, goal2.y);
@@ -319,7 +331,7 @@ function drawRink() {
     ctx.lineTo(goal1.x, goal1.y+goal1.height);
     ctx.stroke();
 
-    //scoreboard
+    //Drawing the scoreboard
     ctx.fillStyle = "black";
     ctx.font = "bold 32px Arial";
     ctx.textBaseline = 'bottom';

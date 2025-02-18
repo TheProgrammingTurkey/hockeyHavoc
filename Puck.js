@@ -1,4 +1,5 @@
 class Puck{
+    //Creates the puck
     constructor(x, y, left, right, maxFaceOffTime){
         this.radius = 6;
         this.position = new Vec2(x, y);
@@ -17,7 +18,7 @@ class Puck{
         this.pickedUp = false;
     }
     movement(){
-        //dont score more than once
+        //if the players are celebrating, they can't score
         if(this.justScored){
             this.justScoredTimer+=secondsPassed;
         }
@@ -30,6 +31,7 @@ class Puck{
             this.position.x = puckCarrier.position.x + Math.cos(puckCarrier.theta*TO_RADIANS) * puckCarrier.radius;
             this.position.y = puckCarrier.position.y - Math.sin(puckCarrier.theta*TO_RADIANS) * puckCarrier.radius;
             let angle1, angle2;
+            //passing to teammates
             if(puckCarrier.team == "user"){
                 if(controlledPlayerNum == 0){
                     angle1 = this.angleTo(userTeam[1]);
@@ -43,6 +45,7 @@ class Puck{
                     angle1 = this.angleTo(userTeam[0]);
                     angle2 = this.angleTo(userTeam[1]);
                 }
+                //If the puck carrier is facing his teammates, auto align to the teammate
                 if(Math.abs(angle1-puckCarrier.theta) < Math.abs(angle2-puckCarrier.theta) && Math.abs(angle1-puckCarrier.theta) < 30){
                     this.velocity.x = (rink.width/1.4)*Math.cos(angle1*TO_RADIANS);
                     this.velocity.y = (rink.width/1.4)*-Math.sin(angle1*TO_RADIANS);
@@ -73,11 +76,13 @@ class Puck{
                     }
                     userTeam[controlledPlayerNum].circleColor = "blue";
                 }
+                //pass/shoot the way the puck carrier is facing
                 else{
                     this.velocity.x = (rink.width/1.4)*Math.cos(puckCarrier.theta*TO_RADIANS);
                     this.velocity.y = (rink.width/1.4)*-Math.sin(puckCarrier.theta*TO_RADIANS);
                 }
             }
+            //pass/shoot the way the puck carrier is facing
             else{
                 this.velocity.x = (rink.width/1.4)*Math.cos(puckCarrier.theta*TO_RADIANS);
                 this.velocity.y = (rink.width/1.4)*-Math.sin(puckCarrier.theta*TO_RADIANS);
@@ -122,16 +127,18 @@ class Puck{
             this.justPassed = false;
         }
     }
+    //get the angle to the desired position
     angleTo(desired){
         return Math.atan2(this.position.y-desired.position.y, desired.position.x-this.position.x)/TO_RADIANS;
     }
+    //draw the puck
     draw(){
         ctx.beginPath();
         ctx.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI, false);
         ctx.fillStyle = 'black';
         ctx.fill();
     }  
-    //after goal --> go to faceoff
+    //after goal --> go to face off
     reset(){
         if(difference <= 0){
             elapsedTime = 0;
@@ -147,6 +154,7 @@ class Puck{
             }
             startTime = new Date().getTime();
         }
+        //reset the players and puck to where they should be. Also reset variables
         userTeam[0] = new Player(canvas.width/2-playerRadius-(rink.width+rink.x)/192, (rink.height+rink.y)/2, 0, document.getElementById("playerRedIMG"), "user");
         cpuTeam[0] = new Player(canvas.width/2+playerRadius+(rink.width+rink.x)/192, (rink.height+rink.y)/2, 180, document.getElementById("playerGreenIMG"), "cpu");
         players[0] = userTeam[0];
@@ -176,6 +184,7 @@ class Puck{
         if(this.curFaceOffTime >= this.faceOffDropTime){
             puckDropped = true;
         }
+        // win the face off
         if(puckDropped && toggledKeys["Space"]){
             playing = true;
             puckCarrier = userTeam[0];
@@ -186,10 +195,13 @@ class Puck{
             this.isControlled = false;
             this.justPassed = true;
             toggledKeys["Space"] = false;
+            //make the face off harder for next time
             this.maxFaceOffTime = this.curFaceOffTime-this.faceOffDropTime;
         }
+        //pressed space too early or took too long --> lose the face off
         else if((!puckDropped && toggledKeys["Space"]) || this.curFaceOffTime > this.faceOffDropTime+this.maxFaceOffTime){
             if(puckDropped){
+                //make face off easier
                 this.maxFaceOffTime+=.05;
             }
             puckDropped = true;
@@ -203,8 +215,10 @@ class Puck{
             this.justPassed = true;
             toggledKeys["Space"] = false;
         }
+        //set up the timer
         startTime+=currentTime-startTime-elapsedTime;
     }
+    //if 3rd period timer ran out
     gameOver(){
         if(localStorage.getItem("gameType") == "season"){
             let standings = JSON.parse(localStorage.getItem("standings"));
@@ -218,6 +232,7 @@ class Puck{
                     tempAway = standings.indexOf(team);
                 }
             });
+            // add the score to the standings
             if(puck.leftScore > puck.rightScore){
                 localStorage.setItem("result", JSON.stringify([tempHome, 0, puck.leftScore, tempAway, 1, puck.rightScore]));
             }
@@ -235,6 +250,7 @@ class Puck{
         }
     }
     //puck to wall and corner collisions
+    //I still don't understand half of it
     //https://emanueleferonato.com/2022/07/14/continuous-collision-detection-between-a-moving-circle-and-one-or-more-static-line-segments-vertex-collision-included/
     checkCollision(movingCircle, circleVelocity, staticLines){
         let velocityLine = new Phaser.Geom.Line(movingCircle.x, movingCircle.y, movingCircle.x + circleVelocity.x, movingCircle.y + circleVelocity.y);

@@ -1,3 +1,4 @@
+//For Player collisions in Player.js
 class Contact{
     constructor(a, b) {
         this.a           = a;

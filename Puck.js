@@ -28,8 +28,8 @@ class Puck{
         }
         //shooting/passing
         if(((toggledKeys["Space"] && puckCarrier.team == "user") || this.cpuShot) && this.isControlled){
-            this.position.x = puckCarrier.position.x + Math.cos(puckCarrier.theta*TO_RADIANS) * puckCarrier.radius;
-            this.position.y = puckCarrier.position.y - Math.sin(puckCarrier.theta*TO_RADIANS) * puckCarrier.radius;
+            this.position.x = puckCarrier.position.x;
+            this.position.y = puckCarrier.position.y;
             let angle1, angle2;
             //passing to teammates
             if(puckCarrier.team == "user"){
@@ -123,7 +123,9 @@ class Puck{
             this.position.x = puckCarrier.position.x + Math.cos(this.orbitState) * puckCarrier.radius;
             this.position.y = puckCarrier.position.y + Math.sin(this.orbitState) * puckCarrier.radius;
         }
-        if(this.justPassed && !colliding(puckCarrier, this)){
+        let line = new Phaser.Geom.Line(this.position.x, this.position.y, this.position.x-this.velocity.x, this.position.y-this.velocity.y);
+        let circle = new Phaser.Geom.Circle(puckCarrier.position.x, puckCarrier.position.y, puckCarrier.radius+this.radius);
+        if(this.justPassed && !Phaser.Geom.Intersects.LineToCircle(line, circle)){
             this.justPassed = false;
         }
     }

@@ -44,7 +44,7 @@ td{
     margin: 10px;
 }
 body {
-    overflow: hidden;
+    overflow: auto;
     margin: 0;
     padding: 0;
 }
@@ -55,3 +55,12 @@ a{
     text-decoration: none;
     color: black;
 }
+/* 
+@media only screen and (max-height: 800px) {
+    td{
+        font-size: 20px;
+    }
+    th{
+        font-size: 20px;
+    }
+} */

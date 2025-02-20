@@ -8,6 +8,14 @@ let seasonTeamSelect = document.getElementById("seasonTeamSelect");
 let quickPlayTeamSelect = document.getElementById("quickPlayTeamSelect");
 let selectTeamName;
 
+//To exit from the team selector
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        seasonTeamSelect.style.display = "none";
+        quickPlayTeamSelect.style.display = "none";
+    }
+});
+
 //Setup the Standings
 let stats;
 if (localStorage.getItem("standings") === null){

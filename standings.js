@@ -117,6 +117,7 @@ else{
             }
         });
         localStorage.removeItem("result");
+        localStorage.setItem("schedule", JSON.stringify(schedule));
     }
     else{
         allStats = JSON.parse(localStorage.getItem("standings"));
@@ -126,7 +127,6 @@ for(let i = 0; i < 8; i++){
     allStats[i][4] = parseInt(allStats[i][1])*2+parseInt(allStats[i][3]);
 }
 localStorage.setItem("standings", JSON.stringify(allStats));
-localStorage.removeItem("results");
 
 let userScheduleNumRows = 7;
 //https://codepal.ai/code-generator/query/lEK7VGTk/javascript-function-automatic-match-schedule
@@ -241,7 +241,6 @@ function displayUserSchedule(){
         let row = document.createElement("tr");
         for(let j = 0; j < Math.ceil(schedule.length/userScheduleNumRows); j++){
             //Each Game
-
             if(i*Math.ceil(schedule.length/userScheduleNumRows)+j < schedule.length){
                 let game;
                 //Bold the game if its the next one

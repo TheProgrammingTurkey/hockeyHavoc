@@ -13,6 +13,7 @@ document.addEventListener('keydown', function(event) {
     if (event.key === 'Escape') {
         seasonTeamSelect.style.display = "none";
         quickPlayTeamSelect.style.display = "none";
+        document.getElementById("showInstructionsButton").style.display = "inline";
     }
 });
 

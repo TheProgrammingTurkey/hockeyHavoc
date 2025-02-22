@@ -164,8 +164,15 @@ function update() {
     difference = 61000 - (currentTime-startTime);
     if(difference <= 0){
         minutes = 0;
-        seconds = "00";
+        seconds = "00.0";
         puck.justScored = true;
+    }
+    else if(difference >= 10000){
+        minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        seconds = Math.floor((difference % (1000 * 60)) / 1000);
+        if(seconds<10){
+            seconds = "0"+seconds;
+        }
     }
     else{
         minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
@@ -173,6 +180,7 @@ function update() {
         if(seconds<10){
             seconds = "0"+seconds;
         }
+        seconds+="."+Math.floor((difference % 1000)/100)
     }
     //do a faceoff
     if(!playing){

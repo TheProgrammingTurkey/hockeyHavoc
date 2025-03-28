@@ -201,9 +201,18 @@ class Player{
             }
         }
         else{
+            //find closest player on the team to the puck
+            let closestDist = Infinity;
+            let closestI;
+            for(let i = 0; i < userTeam.length; i++){
+                if(Math.sqrt((cpuTeam[i].position.x-puck.position.x)*(cpuTeam[i].position.x-puck.position.x) + (cpuTeam[i].position.y-puck.position.y)*(cpuTeam[i].position.y-puck.position.y)) < closestDist){
+                    closestI = i;
+                    closestDist = Math.sqrt((cpuTeam[i].position.x-puck.position.x)*(cpuTeam[i].position.x-puck.position.x) + (cpuTeam[i].position.y-puck.position.y)*(cpuTeam[i].position.y-puck.position.y));
+                }
+            }
             if(puck.isControlled && this != puckCarrier){
                 if(this.team != puckCarrier.team){
-                    if(this.canCheck){
+                    if(this.canCheck && cpuTeam.indexOf(this) == closestI){
                         //angle to puck carrier
                         alpha = this.angleTo(puckCarrier);
                         //angle to the puck
@@ -228,9 +237,13 @@ class Player{
                             }
                         }
                     }
-                    else{
+                    else if(this.canCheck){
                         // angle to in between the puck carrier and goal
                         alpha = this.angleTo(new Point(goal2.x+.75*(puckCarrier.position.x-goal2.x), (goal2.y+goal2.height/2)+.75*(puckCarrier.position.y-(goal2.y+goal2.height/2))));
+                    }
+                    else{
+                        //play more defensive
+                        alpha = this.angleTo(new Point(goal2.x+.33*(puckCarrier.position.x-goal2.x), (goal2.y+goal2.height/2)+.33*(puckCarrier.position.y-(goal2.y+goal2.height/2))));
                     }
                 }
                 //if cpu's team is on offense
@@ -238,27 +251,27 @@ class Player{
                     //decide between going to the left or right of the puckCarrier, and is always in between the goal and puck carrier
                     if(cpuTeam.indexOf(puckCarrier) == 0){
                         if(cpuTeam.indexOf(this) == 1){
-                            alpha = this.angleTo(new Point(goal1.x+.5*(puckCarrier.position.x-goal1.x), rink.y+.5*(puckCarrier.position.y-rink.y)));
+                            alpha = this.angleTo(new Point(goal2.x+.75*(puckCarrier.position.x-goal2.x), rink.y+.33*(puckCarrier.position.y-rink.y)));
                         }
                         else{
-                            alpha = this.angleTo(new Point(goal1.x+.5*(puckCarrier.position.x-goal1.x), rink.height-.5*(rink.height-puckCarrier.position.y)));
+                            alpha = this.angleTo(new Point(goal2.x+.75*(puckCarrier.position.x-goal2.x), rink.height-.33*(rink.height-puckCarrier.position.y)));
                         }
 
                     }
                     else if(cpuTeam.indexOf(puckCarrier) == 1){
                         if(cpuTeam.indexOf(this) == 0){
-                            alpha = this.angleTo(new Point(goal1.x+.5*(puckCarrier.position.x-goal1.x), rink.y+.5*(puckCarrier.position.y-rink.y)));
+                            alpha = this.angleTo(new Point(goal2.x+.75*(puckCarrier.position.x-goal2.x), rink.y+.33*(puckCarrier.position.y-rink.y)));
                         }
                         else{
-                            alpha = this.angleTo(new Point(goal1.x+.5*(puckCarrier.position.x-goal1.x), rink.height-.5*(rink.height-puckCarrier.position.y)));
+                            alpha = this.angleTo(new Point(goal2.x+.75*(puckCarrier.position.x-goal2.x), rink.height-.33*(rink.height-puckCarrier.position.y)));
                         }
                     }
                     else{
                         if(cpuTeam.indexOf(this) == 0){
-                            alpha = this.angleTo(new Point(goal1.x+.5*(puckCarrier.position.x-goal1.x), rink.y+.5*(puckCarrier.position.y-rink.y)));
+                            alpha = this.angleTo(new Point(goal2.x+.75*(puckCarrier.position.x-goal2.x), rink.y+.33*(puckCarrier.position.y-rink.y)));
                         }
                         else{
-                            alpha = this.angleTo(new Point(goal1.x+.5*(puckCarrier.position.x-goal1.x), rink.height-.5*(rink.height-puckCarrier.position.y)));
+                            alpha = this.angleTo(new Point(goal2.x+.75*(puckCarrier.position.x-goal2.x), rink.height-.33*(rink.height-puckCarrier.position.y)));
                         }
                     }
                 }
@@ -299,8 +312,41 @@ class Player{
                 alpha = this.angleTo(new Point(goal1.x, goal1.y+goal1.height/2));
             }
             else{
-                //angle to the puck
-                alpha = this.angleTo(puck);
+                //if closest to puck, go to puck
+                if(cpuTeam.indexOf(this) == closestI){
+                    alpha = this.angleTo(puck);
+                }
+                //stay back and spread out
+                else if(puck.position.x < 2*canvas.width/3){
+                    if(closestI == 0){
+                        if(cpuTeam.indexOf(this) == 1){
+                            alpha = this.angleTo(new Point(goal2.x+.5*(puck.position.x-goal2.x), puck.position.y));
+                        }
+                        else{
+                            alpha = this.angleTo(new Point(goal2.x+.5*(puck.position.x-goal2.x), puck.position.y));
+                        }
+
+                    }
+                    else if(cpuTeam.indexOf(this) == 1){
+                        if(cpuTeam.indexOf(this) == 0){
+                            alpha = this.angleTo(new Point(goal2.x+.5*(puck.position.x-goal2.x), puck.position.y));
+                        }
+                        else{
+                            alpha = this.angleTo(new Point(goal2.x+.5*(puck.position.x-goal2.x), puck.position.y));
+                        }
+                    }
+                    else{
+                        if(cpuTeam.indexOf(this) == 0){
+                            alpha = this.angleTo(new Point(goal2.x+.5*(puck.position.x-goal2.x), puck.position.y));
+                        }
+                        else{
+                            alpha = this.angleTo(new Point(goal2.x+.5*(puck.position.x-goal2.x), puck.position.y));
+                        }
+                    }
+                }
+                else{
+                    alpha = this.angleTo(puck);
+                }
             }
         }
         //turn to said angle

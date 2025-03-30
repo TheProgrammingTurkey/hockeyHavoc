@@ -115,9 +115,18 @@ class Player{
         //angle to desired position
         let alpha;
         if(this.team == "user"){
+            //find closest player on the team to the puck
+            let closestDist = Infinity;
+            let closestI;
+            for(let i = 0; i < userTeam.length; i++){
+                if(Math.sqrt((userTeam[i].position.x-puck.position.x)*(userTeam[i].position.x-puck.position.x) + (userTeam[i].position.y-puck.position.y)*(userTeam[i].position.y-puck.position.y)) < closestDist){
+                    closestI = i;
+                    closestDist = Math.sqrt((userTeam[i].position.x-puck.position.x)*(userTeam[i].position.x-puck.position.x) + (userTeam[i].position.y-puck.position.y)*(userTeam[i].position.y-puck.position.y));
+                }
+            }
             if(puck.isControlled){
                 if(this.team != puckCarrier.team){
-                    if(this.canCheck){
+                    if(this.canCheck && userTeam.indexOf(this) == closestI){
                         //angle to puck carrier
                         alpha = this.angleTo(puckCarrier);
                         //angle to the puck
@@ -142,9 +151,12 @@ class Player{
                             }
                         }
                     }
-                    else{
+                    else if(this.canCheck){
                         // angle to in between the puck carrier and goal
                         alpha = this.angleTo(new Point(goal1.x+.75*(puckCarrier.position.x-goal1.x), (goal1.y+goal1.height/2)+.75*(puckCarrier.position.y-(goal1.y+goal1.height/2))));
+                    }
+                    else{
+                        alpha = this.angleTo(new Point(goal1.x+.33*(puckCarrier.position.x-goal1.x), (goal1.y+goal1.height/2)+.33*(puckCarrier.position.y-(goal1.y+goal1.height/2))));
                     }
                 }
                 //if cpu's team is on offense
@@ -177,15 +189,6 @@ class Player{
                 }
             }
             else if(puck.position.x > canvas.width/2){
-                //find closest player on the team to the puck
-                let closestDist = Infinity;
-                let closestI;
-                for(let i = 0; i < userTeam.length; i++){
-                    if(Math.sqrt((userTeam[i].position.x-puck.position.x)*(userTeam[i].position.x-puck.position.x) + (userTeam[i].position.y-puck.position.y)*(userTeam[i].position.y-puck.position.y)) < closestDist){
-                        closestI = i;
-                        closestDist = Math.sqrt((userTeam[i].position.x-puck.position.x)*(userTeam[i].position.x-puck.position.x) + (userTeam[i].position.y-puck.position.y)*(userTeam[i].position.y-puck.position.y));
-                    }
-                }
                 //if the cpu is the closest player to the puck on the team --> angle to the puck
                 if(userTeam.indexOf(this) == closestI){
                     alpha = this.angleTo(puck);
@@ -316,7 +319,7 @@ class Player{
                 if(cpuTeam.indexOf(this) == closestI){
                     alpha = this.angleTo(puck);
                 }
-                //stay back and spread out
+                //stay back
                 else if(puck.position.x < 2*canvas.width/3){
                     if(closestI == 0){
                         if(cpuTeam.indexOf(this) == 1){

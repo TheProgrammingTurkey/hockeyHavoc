@@ -126,7 +126,7 @@ class Player{
             }
             if(puck.isControlled){
                 if(this.team != puckCarrier.team){
-                    if(this.canCheck && userTeam.indexOf(this) == closestI){
+                    if(this.canCheck && (userTeam.indexOf(this) == closestI || puck.position.x < canvas.width/3)){
                         //angle to puck carrier
                         alpha = this.angleTo(puckCarrier);
                         //angle to the puck
@@ -215,7 +215,7 @@ class Player{
             }
             if(puck.isControlled && this != puckCarrier){
                 if(this.team != puckCarrier.team){
-                    if(this.canCheck && cpuTeam.indexOf(this) == closestI){
+                    if(this.canCheck && (cpuTeam.indexOf(this) == closestI || puck.position.x > 2*canvas.width/3)){
                         //angle to puck carrier
                         alpha = this.angleTo(puckCarrier);
                         //angle to the puck

@@ -97,8 +97,8 @@ else{
                         awayCPU = i;
                     }
                 }
-                let strength = 6;
-                let logRatio = Math.log(allStats[homeCPU][4] / allStats[homeCPU][4]);
+                let strength = 1;
+                let logRatio = Math.log(allStats[homeCPU][4] / allStats[awayCPU][4]);
                 let winProbA = 1 / (1 + Math.exp(-strength * logRatio));
                 let winProbB = 1 / (1 + Math.exp(strength * logRatio));
                 let tieProbability = .12;

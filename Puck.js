@@ -47,34 +47,82 @@ class Puck{
                 }
                 //If the puck carrier is facing his teammates, auto align to the teammate
                 if(Math.abs(angle1-puckCarrier.theta) < Math.abs(angle2-puckCarrier.theta) && Math.abs(angle1-puckCarrier.theta) < 30){
-                    this.velocity.x = (rink.width/1.4)*Math.cos(angle1*TO_RADIANS);
-                    this.velocity.y = (rink.width/1.4)*-Math.sin(angle1*TO_RADIANS);
-                    userTeam[controlledPlayerNum].circleColor = "red";
+                    let alignedLine;
+                    let clearPath = true;
                     if(controlledPlayerNum == 0){
-                        controlledPlayerNum = 1;
+                        alignedLine = new Phaser.Geom.Line(puckCarrier.position.x, puckCarrier.position.y, userTeam[1].position.x, userTeam[1].position.y);
                     }
                     else if(controlledPlayerNum == 1){
-                        controlledPlayerNum = 2;
+                        alignedLine = new Phaser.Geom.Line(puckCarrier.position.x, puckCarrier.position.y, userTeam[2].position.x, userTeam[2].position.y);
                     }
                     else{
-                        controlledPlayerNum = 0;
+                        alignedLine = new Phaser.Geom.Line(puckCarrier.position.x, puckCarrier.position.y, userTeam[0].position.x, userTeam[0].position.y);
                     }
-                    userTeam[controlledPlayerNum].circleColor = "blue";
+                    //check if a cpu player is in the way before locking onto teammate
+                    cpuTeam.forEach(cpu => {
+                        let circle = new Phaser.Geom.Circle(cpu.position.x, cpu.position.y, cpu.radius+this.radius);
+                        if (Phaser.Geom.Intersects.LineToCircle(alignedLine, circle)){
+                            clearPath = false;
+                        }
+                    });
+                    if(clearPath){
+                        this.velocity.x = (rink.width/1.4)*Math.cos(angle1*TO_RADIANS);
+                        this.velocity.y = (rink.width/1.4)*-Math.sin(angle1*TO_RADIANS);
+                        userTeam[controlledPlayerNum].circleColor = "red";
+                        if(controlledPlayerNum == 0){
+                            controlledPlayerNum = 1;
+                        }
+                        else if(controlledPlayerNum == 1){
+                            controlledPlayerNum = 2;
+                        }
+                        else{
+                            controlledPlayerNum = 0;
+                        }
+                        userTeam[controlledPlayerNum].circleColor = "blue";
+                    }
+                    else{
+                        this.velocity.x = (rink.width/1.4)*Math.cos(puckCarrier.theta*TO_RADIANS);
+                        this.velocity.y = (rink.width/1.4)*-Math.sin(puckCarrier.theta*TO_RADIANS);
+                    }
                 }
                 else if(Math.abs(angle2-puckCarrier.theta) < 30){
-                    this.velocity.x = (rink.width/1.4)*Math.cos(angle2*TO_RADIANS);
-                    this.velocity.y = (rink.width/1.4)*-Math.sin(angle2*TO_RADIANS);
-                    userTeam[controlledPlayerNum].circleColor = "red";
+                    let alignedLine;
+                    let clearPath = true;
                     if(controlledPlayerNum == 0){
-                        controlledPlayerNum = 2;
+                        alignedLine = new Phaser.Geom.Line(puckCarrier.position.x, puckCarrier.position.y, userTeam[2].position.x, userTeam[2].position.y);
                     }
                     else if(controlledPlayerNum == 1){
-                        controlledPlayerNum = 0;
+                        alignedLine = new Phaser.Geom.Line(puckCarrier.position.x, puckCarrier.position.y, userTeam[0].position.x, userTeam[0].position.y);
                     }
                     else{
-                        controlledPlayerNum = 1;
+                        alignedLine = new Phaser.Geom.Line(puckCarrier.position.x, puckCarrier.position.y, userTeam[1].position.x, userTeam[1].position.y);
                     }
-                    userTeam[controlledPlayerNum].circleColor = "blue";
+                    //check if a cpu player is in the way before locking onto teammate
+                    cpuTeam.forEach(cpu => {
+                        let circle = new Phaser.Geom.Circle(cpu.position.x, cpu.position.y, cpu.radius+this.radius);
+                        if (Phaser.Geom.Intersects.LineToCircle(alignedLine, circle)){
+                            clearPath = false;
+                        }
+                    });
+                    if(clearPath){
+                        this.velocity.x = (rink.width/1.4)*Math.cos(angle2*TO_RADIANS);
+                        this.velocity.y = (rink.width/1.4)*-Math.sin(angle2*TO_RADIANS);
+                        userTeam[controlledPlayerNum].circleColor = "red";
+                        if(controlledPlayerNum == 0){
+                            controlledPlayerNum = 2;
+                        }
+                        else if(controlledPlayerNum == 1){
+                            controlledPlayerNum = 0;
+                        }
+                        else{
+                            controlledPlayerNum = 1;
+                        }
+                        userTeam[controlledPlayerNum].circleColor = "blue";
+                    }
+                    else{
+                        this.velocity.x = (rink.width/1.4)*Math.cos(puckCarrier.theta*TO_RADIANS);
+                        this.velocity.y = (rink.width/1.4)*-Math.sin(puckCarrier.theta*TO_RADIANS);
+                    }
                 }
                 //pass/shoot the way the puck carrier is facing
                 else{

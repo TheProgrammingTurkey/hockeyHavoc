@@ -57,6 +57,10 @@ class Player{
             } 
         }
         //CPUs always go forward at full speed
+        else if(this.team == "cpu"){
+            skateX = Math.cos(this.theta*TO_RADIANS)*parseFloat(cpuSpeed);
+            skateY = -Math.sin(this.theta*TO_RADIANS)*parseFloat(cpuSpeed); 
+        }
         else{
             skateX = Math.cos(this.theta*TO_RADIANS)*400;
             skateY = -Math.sin(this.theta*TO_RADIANS)*400; 

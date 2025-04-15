@@ -132,8 +132,8 @@ class Puck{
             }
             //pass/shoot the way the puck carrier is facing but with a 5 degree randomization
             else{
-                this.velocity.x = (rink.width/1.4)*Math.cos((puckCarrier.theta+Math.random()*10-5)*TO_RADIANS);
-                this.velocity.y = (rink.width/1.4)*-Math.sin((puckCarrier.theta+Math.random()*10-5)*TO_RADIANS);
+                this.velocity.x = (rink.width/1.4)*parseFloat(cpuPower)*Math.cos((puckCarrier.theta+Math.random()*(-parseFloat(cpuAccuracy))-parseFloat(cpuAccuracy)/2)*TO_RADIANS);
+                this.velocity.y = (rink.width/1.4)*parseFloat(cpuPower)*-Math.sin((puckCarrier.theta+Math.random()*(-parseFloat(cpuAccuracy))-parseFloat(cpuAccuracy)/2)*TO_RADIANS);
             }
             this.isControlled = false;
             this.justPassed = true;
@@ -408,9 +408,9 @@ class Puck{
     }
     //get the point at which two lines cross
     getIntersectionPoint(line1, line2){ 
-        // if ((line1.x1 == line1.x2 && line1.y1 == line1.y2) || (line2.x1 == line2.x2 && line2.y1 == line2.y2)) {
-        //     return new Intersection(intersectionType.None);
-        // }
+        if ((line1.x1 == line1.x2 && line1.y1 == line1.y2) || (line2.x1 == line2.x2 && line2.y1 == line2.y2)) {
+            return new Intersection(intersectionType.None);
+        }
         let denominator = ((line2.y2 - line2.y1) * (line1.x2 - line1.x1) - (line2.x2 - line2.x1) * (line1.y2 - line1.y1));
         if (denominator == 0) {
             return new Intersection(intersectionType.None);

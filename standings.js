@@ -324,6 +324,16 @@ function displayStandings(){
         standingsTable.appendChild(row);
     }
 }
+function initializeSliders(){
+    cpuSpeed.value = localStorage.getItem("cpuSpeed") || 400;
+    cpuAccuracy.value = localStorage.getItem("cpuAccuracy") || -10;
+    cpuPower.value = localStorage.getItem("cpuPower") || 1;
+}
+function setSliders(){
+    localStorage.setItem("cpuSpeed", cpuSpeed.value);
+    localStorage.setItem("cpuAccuracy", cpuAccuracy.value);
+    localStorage.setItem("cpuPower", cpuPower.value);
+}
 function pickSeasonTeam(){
     //If the season hasn't started yet --> pick your team
     if(localStorage.getItem("currentWeek") !== null && localStorage.getItem("currentWeek") != 0){
@@ -379,4 +389,16 @@ function showInstructions(){
 }
 function hideInstructions(){
     document.getElementById("instructions").style.display = "none";
+}
+function showSliders(){
+    document.getElementById("sliders").style.display = "block";
+}
+function hideSliders(){
+    document.getElementById("sliders").style.display = "none";
+}
+function resetSliders(){
+    for(let i = 0; i < document.getElementsByTagName("input").length; i++){
+        document.getElementsByTagName("input")[i].value = (parseFloat(document.getElementsByTagName("input")[i].max)+parseFloat(document.getElementsByTagName("input")[i].min))/2;
+    }
+    setSliders();
 }

@@ -7,7 +7,7 @@
     <script src="standings.js" defer></script>
     <title>Hockey Havoc</title>
 </head>
-<body>
+<body onload="initializeSliders()">
     <h1>Hockey Havoc</h1>
     <div id="gamemodeSelect">
         <button onclick="pickSeasonTeam()">Season</button>
@@ -37,10 +37,41 @@
         </div>
         <a href="game.html">Select Team</a>
     </div>
-    <p id="information">V 1.1.0</p>
+    <button onclick="showSliders()" id="showSlidersButton">Gameplay Sliders</button>
+    <div id="sliders" class="popup" style="height: 75vh;">
+        <button id = "x" onclick = "hideSliders()">X</button>
+        <br>
+        <h2>Gameplay Sliders</h2>
+        <!-- <div>
+            <label>USER Speed:</label>
+            <input type="range" min="200" max="600" class="slider" id="userSpeed" onChange="setSliders()">
+        </div>
+        <div>
+            <label>USER Shooting Speed:</label>
+            <input type="range" min=".5" max="2" step=".01" class="slider" id="userPower" onChange="setSliders()">
+        </div> -->
+        <div>
+            <label>CPU Speed:</label>
+            <input type="range" min="200" max="600" class="slider" id="cpuSpeed" onChange="setSliders()">
+        </div>
+        <div>
+            <label>CPU Shooting Accuracy:</label>
+            <input type="range" min="-20" max="0" step=".1" class="slider" id="cpuAccuracy" onChange="setSliders()">
+        </div>
+        <div>
+            <label>CPU Shooting Speed:</label>
+            <input type="range" min=".5" max="2" step=".01" class="slider" id="cpuPower" onChange="setSliders()">
+        </div>
+        <!-- <div>
+            <label>CPU Aggression:</label>
+            <input type="range" min="1" max="100" class="slider" id="cpuAgression" onChange="setSliders()">
+        </div> -->
+        <button id="resetSliders" onclick="resetSliders()">Reset</button>
+    </div>
+    <p id="information">V 1.1.1</p>
     <!-- Instructions/Controls Popup-->
-    <button onclick = "showInstructions()" id="showInstructionsButton">Instructions</button>
-    <div id="instructions">
+    <button onclick="showInstructions()" id="showInstructionsButton">Instructions</button>
+    <div id="instructions" class="popup">
         <button id = "x" onclick = "hideInstructions()">X</button>
         <h2>Controls</h2>
         <p>Up Arrow: Move Forward</p>

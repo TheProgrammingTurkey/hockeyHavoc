@@ -107,6 +107,11 @@ let puck = new Puck((rink.width+rink.x)/2, (rink.height+rink.y)/2, 0, 0, .25);
 let playing = false;
 let puckDropped = false;
 
+//Define variables from slider menu
+let cpuSpeed = localStorage.getItem("cpuSpeed") || 400;
+let cpuAccuracy = localStorage.getItem("cpuAccuracy") || 10;
+let cpuPower = localStorage.getItem("cpuPower") || 1;
+
 let startTime = new Date().getTime();
 let currentTime;
 let elapsedTime = 0;

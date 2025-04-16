@@ -325,9 +325,9 @@ function displayStandings(){
     }
 }
 function initializeSliders(){
-    cpuSpeed.value = localStorage.getItem("cpuSpeed") || 400;
-    cpuAccuracy.value = localStorage.getItem("cpuAccuracy") || -10;
-    cpuPower.value = localStorage.getItem("cpuPower") || 1;
+    cpuSpeed.value = localStorage.getItem("cpuSpeed") || (parseFloat(document.getElementById("cpuSpeed").max)+parseFloat(document.getElementById("cpuSpeed").min))/2;
+    cpuAccuracy.value = localStorage.getItem("cpuAccuracy") || (parseFloat(document.getElementById("cpuAccuracy").max)+parseFloat(document.getElementById("cpuAccuracy").min))/2;
+    cpuPower.value = localStorage.getItem("cpuPower") || (parseFloat(document.getElementById("cpuPower").max)+parseFloat(document.getElementById("cpuPower").min))/2;
 }
 function setSliders(){
     localStorage.setItem("cpuSpeed", cpuSpeed.value);

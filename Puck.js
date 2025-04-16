@@ -132,8 +132,8 @@ class Puck{
             }
             //pass/shoot the way the puck carrier is facing but with a 5 degree randomization
             else{
-                this.velocity.x = (rink.width/1.4)*parseFloat(cpuPower)*Math.cos((puckCarrier.theta+Math.random()*(-parseFloat(cpuAccuracy))-parseFloat(cpuAccuracy)/2)*TO_RADIANS);
-                this.velocity.y = (rink.width/1.4)*parseFloat(cpuPower)*-Math.sin((puckCarrier.theta+Math.random()*(-parseFloat(cpuAccuracy))-parseFloat(cpuAccuracy)/2)*TO_RADIANS);
+                this.velocity.x = (rink.width/1.4)*parseFloat(cpuPower)*Math.cos((puckCarrier.theta+Math.random()*(-parseFloat(cpuAccuracy))+parseFloat(cpuAccuracy)/2)*TO_RADIANS);
+                this.velocity.y = (rink.width/1.4)*parseFloat(cpuPower)*-Math.sin((puckCarrier.theta+Math.random()*(-parseFloat(cpuAccuracy))+parseFloat(cpuAccuracy)/2)*TO_RADIANS);
             }
             this.isControlled = false;
             this.justPassed = true;

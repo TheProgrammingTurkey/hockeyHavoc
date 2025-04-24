@@ -325,14 +325,12 @@ function displayStandings(){
     }
 }
 function initializeSliders(){
-    cpuSpeed.value = localStorage.getItem("cpuSpeed") || (parseFloat(document.getElementById("cpuSpeed").max)+parseFloat(document.getElementById("cpuSpeed").min))/2;
-    cpuAccuracy.value = localStorage.getItem("cpuAccuracy") || (parseFloat(document.getElementById("cpuAccuracy").max)+parseFloat(document.getElementById("cpuAccuracy").min))/2;
-    cpuPower.value = localStorage.getItem("cpuPower") || (parseFloat(document.getElementById("cpuPower").max)+parseFloat(document.getElementById("cpuPower").min))/2;
+    document.getElementById("seasonDiff").value = localStorage.getItem("seasonDifficulty") || (parseFloat(document.getElementById("seasonDiff").max)+parseFloat(document.getElementById("seasonDiff").min))/2;
+    document.getElementById("quickplayDiff").value = localStorage.getItem("quickplayDifficulty") || (parseFloat(document.getElementById("quickplayDiff").max)+parseFloat(document.getElementById("quickplayDiff").min))/2;
 }
 function setSliders(){
-    localStorage.setItem("cpuSpeed", cpuSpeed.value);
-    localStorage.setItem("cpuAccuracy", cpuAccuracy.value);
-    localStorage.setItem("cpuPower", cpuPower.value);
+    localStorage.setItem("seasonDifficulty", document.getElementById("seasonDiff").value);
+    localStorage.setItem("quickplayDifficulty", document.getElementById("quickplayDiff").value);
 }
 function pickSeasonTeam(){
     //If the season hasn't started yet --> pick your team

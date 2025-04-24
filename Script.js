@@ -43,7 +43,10 @@ let homeTeam;
 let awayTeam;
 
 let currentWeek;
-let thisWeek
+let thisWeek;
+
+let difficulty;
+let diffSlider;
 
 //If the user picked Quick Play, figure out what team is the home team and what team is the away team
 if(localStorage.getItem("gameType") == "quickPlay"){
@@ -58,8 +61,13 @@ if(localStorage.getItem("gameType") == "quickPlay"){
         return true;
     });
     awayTeam = [,teams[Math.floor(Math.random()*teams.length)][1]];
-}
-//If the user picked Season, use the schedule to find the away team
+    if(localStorage.getItem("quickplayDifficulty") !== null){
+        difficulty = parseInt(localStorage.getItem("quickplayDifficulty"));
+    }
+    else{
+        difficulty = 50;
+    }
+}//If the user picked Season, use the schedule to find the away team
 else{
     currentWeek = parseInt(localStorage.getItem("currentWeek"));
     thisWeek = JSON.parse(localStorage.getItem("schedule"))[currentWeek];
@@ -75,8 +83,55 @@ else{
             awayTeam = game.homeTeam;
         }
     });
+    let standings = JSON.parse(localStorage.getItem("standings"));
+    let homePoints;
+    let awayPoints;
+    standings.forEach(team => {
+        if(team[0] == homeTeam[0]){
+            tempHome = standings.indexOf(team);
+            homePoints = team[4];
+        }
+        else if(team[0] == awayTeam[0]){
+            tempAway = standings.indexOf(team);
+            awayPoints = team[4];
+        }
+    });
+    if(localStorage.getItem("seasonDifficulty") !== null){
+        difficulty = parseInt(localStorage.getItem("seasonDifficulty"));
+    }
+    else{
+        difficulty = 50;
+    }
+    if(parseInt(difficulty) == 0){
+        difficulty = -20;
+    }
+    if(parseInt(difficulty) == 25){
+        difficulty = 5;
+    }
+    if(parseInt(difficulty) == 50){
+        difficulty = 30;
+    }
+    if(parseInt(difficulty) == 75){
+        difficulty = 55;
+    }
+    if(parseInt(difficulty) == 100){
+        difficulty = 80;
+    }
+    const total = homePoints + awayPoints;
+    if (total === 0){
+        difficulty+=20;
+    }
+    else{//difficulty is based on the difference in points between the two teams
+        const diff = awayPoints - homePoints;
+        const relativeStrength = diff / total;
+        const scalingFactor = Math.min(1, total / 7)
+        const rawDifferenceComponent = Math.max(-1, Math.min(1, diff / 15));
+        const combinedEffect = (relativeStrength * scalingFactor * 0.40) + (rawDifferenceComponent * 0.60);
+        const tempDiff = Math.round((combinedEffect + 1) * 20);
+        difficulty+=Math.max(0, Math.min(40, tempDiff));
+        difficulty = Math.max(0, Math.min(100, difficulty));
+    }
 }
-
 
 //players
 let userTeam = [];
@@ -107,10 +162,12 @@ let puck = new Puck((rink.width+rink.x)/2, (rink.height+rink.y)/2, 0, 0, .25);
 let playing = false;
 let puckDropped = false;
 
-//Define variables from slider menu
-let cpuSpeed = localStorage.getItem("cpuSpeed") || 400;
-let cpuAccuracy = localStorage.getItem("cpuAccuracy") || 10;
-let cpuPower = localStorage.getItem("cpuPower") || 1;
+//Define difficulty settings
+let cpuSpeed = (300 + (500-300)*(difficulty/100));
+let cpuAccuracy = ((0-20)*(1-difficulty/100));
+let cpuPower = (0.75 + (1.25-.75)*(difficulty/100));
+let cpuCheckingSpeed = (0.6 + (2-0.6)*(difficulty/100));
+let cpuCheckingDistance = (.5 + (1.5-0.5)*(difficulty/100));
 
 let startTime = new Date().getTime();
 let currentTime;

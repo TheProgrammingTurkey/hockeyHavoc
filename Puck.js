@@ -369,7 +369,8 @@ class Puck{
                     closestI = i;
                 }
                 circle = new Phaser.Geom.Circle(cpuTeam[i].position.x, cpuTeam[i].position.y, cpuTeam[i].radius+this.radius);
-                if (Phaser.Geom.Intersects.LineToCircle(line, circle) && !(cpuTeam[i] == puckCarrier && this.justPassed) && (!this.pickedUp || Phaser.Math.Distance.Between(cpuTeam[i].position.x, cpuTeam[i].position.y, movingCircle.x, movingCircle.y) < closest)){                    this.pickedUp = true;
+                if (Phaser.Geom.Intersects.LineToCircle(line, circle) && !(cpuTeam[i] == puckCarrier && this.justPassed) && (!this.pickedUp || Phaser.Math.Distance.Between(cpuTeam[i].position.x, cpuTeam[i].position.y, movingCircle.x, movingCircle.y) < closest)){                    
+                    this.pickedUp = true;
                     closest = Phaser.Math.Distance.Between(cpuTeam[i].position.x, cpuTeam[i].position.y, movingCircle.x, movingCircle.y);
                     closestTeam = "cpu";
                     closestI = i;

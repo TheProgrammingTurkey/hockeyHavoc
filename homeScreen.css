@@ -46,19 +46,19 @@ button:hover{
     border-width: 2px;
 }
 #sliders div {
-    margin-left: 30%;
+    margin-left: 20%;
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     gap: 5%;
 }
 #sliders label {
-    width: 30%;
+    width: 20%;
     text-align: left;
 }
 #sliders input {
-    width: 20%;
+    width: 50%;
     text-align: left;
     -webkit-appearance: none;
     appearance: none;
@@ -83,6 +83,20 @@ button:hover{
 }
 #sliders input::-webkit-slider-thumb:hover {
     background-color: #82A0BC;
+}
+#sliders .sliderLabels {
+    margin-left: 22.5%;
+    margin-bottom: 30px;
+    font-size: 12px; 
+    display: flex; 
+    justify-content: space-between; 
+    width: 55%;
+    text-align: center; /* Center text inside each <p> */
+}
+
+#sliders .sliderLabels p {
+    flex: 1; /* Make each <p> take up equal space */
+    text-align: center; /* Center the text inside each <p> */
 }
 #resetSliders{
     font-size: 15px;

@@ -1,6 +1,6 @@
 class Player{
     //Creates each player
-    constructor(x, y, theta, img, team){
+    constructor(x, y, theta, img, team, delta){
         this.radius = playerRadius
         this.position = new Vec2(x, y);
         this.previousPosition = this.position;
@@ -10,7 +10,7 @@ class Player{
         this.mass  = 1 / (this.radius * this.radius / 100);
         this.img = img;
         this.skatingForce = 0;
-        this.delta = Math.PI*75;
+        this.delta = delta;
         this.theta = theta;
         this.team = team;
         if(team == "user"){

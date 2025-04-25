@@ -205,16 +205,16 @@ class Puck{
             startTime = new Date().getTime();
         }
         //reset the players and puck to where they should be. Also reset variables
-        userTeam[0] = new Player(canvas.width/2-playerRadius-(rink.width+rink.x)/192, (rink.height+rink.y)/2, 0, document.getElementById("playerRedIMG"), "user");
-        cpuTeam[0] = new Player(canvas.width/2+playerRadius+(rink.width+rink.x)/192, (rink.height+rink.y)/2, 180, document.getElementById("playerGreenIMG"), "cpu");
+        userTeam[0] = new Player(canvas.width/2-playerRadius-(rink.width+rink.x)/192, (rink.height+rink.y)/2, 0, document.getElementById("playerRedIMG"), "user", Math.PI*75);
+        cpuTeam[0] = new Player(canvas.width/2+playerRadius+(rink.width+rink.x)/192, (rink.height+rink.y)/2, 180, document.getElementById("playerGreenIMG"), "cpu", cpuTurningSpeed);
         players[0] = userTeam[0];
         players[1] = cpuTeam[0];
-        userTeam[1] = new Player(rink.x+playerRadius, (rink.height+rink.y)/2, 0, document.getElementById("playerRedIMG"), "user");
-        cpuTeam[1] = new Player(rink.width-playerRadius, (rink.height+rink.y)/2, 180, document.getElementById("playerGreenIMG"), "cpu");
+        userTeam[1] = new Player(rink.x+playerRadius, (rink.height+rink.y)/2, 0, document.getElementById("playerRedIMG"), "user", Math.PI*75);
+        cpuTeam[1] = new Player(rink.width-playerRadius, (rink.height+rink.y)/2, 180, document.getElementById("playerGreenIMG"), "cpu", cpuTurningSpeed);
         players[2] = userTeam[1];
         players[3] = cpuTeam[1];
-        userTeam[2] = new Player(canvas.width/2-playerRadius, rink.height-playerRadius, 90, document.getElementById("playerRedIMG"), "user");
-        cpuTeam[2] = new Player(canvas.width/2+playerRadius, rink.height-playerRadius, 90, document.getElementById("playerGreenIMG"), "cpu");
+        userTeam[2] = new Player(canvas.width/2-playerRadius, rink.height-playerRadius, 90, document.getElementById("playerRedIMG"), "user", Math.PI*75);
+        cpuTeam[2] = new Player(canvas.width/2+playerRadius, rink.height-playerRadius, 90, document.getElementById("playerGreenIMG"), "cpu", cpuTurningSpeed);
         players[4] = userTeam[2];
         players[5] = cpuTeam[2];
         userTeam[0].circleColor = "blue";

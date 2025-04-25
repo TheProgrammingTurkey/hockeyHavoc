@@ -133,6 +133,14 @@ else{
     }
 }
 
+//Define difficulty settings
+let cpuSpeed = (300 + (500-300)*(difficulty/100));
+let cpuAccuracy = ((0-20)*(1-difficulty/100));
+let cpuPower = (0.75 + (1.25-.75)*(difficulty/100));
+let cpuCheckingSpeed = (0.6 + (2-0.6)*(difficulty/100));
+let cpuCheckingDistance = (.5 + (1.5-0.5)*(difficulty/100));
+let faceOffDifficulty = (.35 + (.15-.35)*(difficulty/100));
+
 //players
 let userTeam = [];
 let cpuTeam = [];
@@ -158,16 +166,9 @@ let puckCarrier = userTeam[0];
 let offensiveTeam = "user";
 let spaceBarLifted = true;
 let ctrlLifted = true;
-let puck = new Puck((rink.width+rink.x)/2, (rink.height+rink.y)/2, 0, 0, .25);
+let puck = new Puck((rink.width+rink.x)/2, (rink.height+rink.y)/2, 0, 0, faceOffDifficulty);
 let playing = false;
 let puckDropped = false;
-
-//Define difficulty settings
-let cpuSpeed = (300 + (500-300)*(difficulty/100));
-let cpuAccuracy = ((0-20)*(1-difficulty/100));
-let cpuPower = (0.75 + (1.25-.75)*(difficulty/100));
-let cpuCheckingSpeed = (0.6 + (2-0.6)*(difficulty/100));
-let cpuCheckingDistance = (.5 + (1.5-0.5)*(difficulty/100));
 
 let startTime = new Date().getTime();
 let currentTime;

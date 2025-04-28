@@ -199,7 +199,7 @@ class Player{
                 }   
                 //else --> angle to the the middle of the rink
                 else{
-                    alpha = this.angleTo(new Point(goal1.x+.33*(puck.position.x-goal1.x),  (goal1.y+goal1.height/2)+.33*(puck.position.y-(goal1.y+goal1.height/2))));
+                   alpha = this.angleTo(new Point(goal1.x+.33*(puck.position.x-goal1.x),  (goal1.y+goal1.height/2)+.33*(puck.position.y-(goal1.y+goal1.height/2))));
                 }
             }
             else{

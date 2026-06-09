@@ -160,8 +160,14 @@ class Puck{
             let tempVelo = this.velocity.magnitude();
             let tempX = result[result.length-1].velocity.x;
             let tempY = result[result.length-1].velocity.y;
-            this.velocity.x = tempVelo*tempX/Math.sqrt(tempX*tempX+tempY*tempY);
-            this.velocity.y = tempVelo*tempY/Math.sqrt(tempX*tempX+tempY*tempY);
+            let tempMag = Math.sqrt(tempX*tempX + tempY*tempY);
+            if (tempMag > 0) {
+                this.velocity.x = tempVelo*tempX/tempMag;
+                this.velocity.y = tempVelo*tempY/tempMag;
+            } else {
+                this.velocity.x = 0;
+                this.velocity.y = 0;
+            }
             this.velocity.x *= Math.pow(.6, secondsPassed);
             this.velocity.y *= Math.pow(.6, secondsPassed);
         }
@@ -307,6 +313,10 @@ class Puck{
         let gotCollision = false;
         let closestCircleDistance = Infinity;
         let collisionResult = new CollisionResult(new Phaser.Geom.Point(movingCircle.x + circleVelocity.x, movingCircle.y + circleVelocity.y), new Phaser.Math.Vector2(circleVelocity.x, circleVelocity.y));
+        let velocityLength = Phaser.Geom.Line.Length(velocityLine);
+        if (velocityLength === 0) {
+            return [collisionResult];
+        }
         staticLines.forEach((staticLine) => {
             let staticCircles = [new Phaser.Geom.Circle(staticLine.x1, staticLine.y1, 0), new Phaser.Geom.Circle(staticLine.x2, staticLine.y2, 0)];
             staticCircles.forEach((staticCircle) => {
@@ -337,21 +347,23 @@ class Puck{
             let velocityToSegmentIntersection = this.getIntersectionPoint(velocityLine, extendedLine);
             let destinationCircle = new Phaser.Geom.Circle(velocityLine.x2, velocityLine.y2, movingCircle.radius);
             let destinationCircleIntersectsBarrier = Phaser.Geom.Intersects.LineToCircle(staticLine, destinationCircle);
-            if (velocityToSegmentIntersection.type == intersectionType.Strict || destinationCircleIntersectsBarrier) {
+            if ((velocityToSegmentIntersection.type == intersectionType.Strict || destinationCircleIntersectsBarrier) && velocityToSegmentIntersection.point) {
                 let shortestDistancePoint = Phaser.Geom.Line.GetNearestPoint(staticLine, new Phaser.Geom.Point(movingCircle.x, movingCircle.y));
                 let shortestDistanceLine = new Phaser.Geom.Line(movingCircle.x, movingCircle.y, shortestDistancePoint.x, shortestDistancePoint.y);
                 let shortestDistanceLineLength = Phaser.Geom.Line.Length(shortestDistanceLine);
-                let movementLine = new Phaser.Geom.Line(movingCircle.x, movingCircle.y, velocityToSegmentIntersection.point.x, velocityToSegmentIntersection.point.y);
-                let ratioonmovement = movingCircle.radius / shortestDistanceLineLength;
-                let newCenter = Phaser.Geom.Line.GetPoint(movementLine, 1 - ratioonmovement);
-                let closestPoint = Phaser.Geom.Line.GetNearestPoint(staticLine, new Phaser.Geom.Point(newCenter.x, newCenter.y))
-                let distanceFromNewCenterToCircle = Phaser.Math.Distance.Between(movingCircle.x, movingCircle.y, newCenter.x, newCenter.y); 
-                if (closestPoint.x >= staticLine.left && closestPoint.x <= staticLine.right && closestPoint.y >= staticLine.top && closestPoint.y <= staticLine.bottom && distanceFromNewCenterToCircle < closestCircleDistance) {       
-                    gotCollision = true;
-                    closestCircleDistance = distanceFromNewCenterToCircle;
-                    let reflectionAngle = Phaser.Geom.Line.ReflectAngle(velocityLine, staticLine);
-                    let remainingVelocity = Phaser.Math.Distance.Between(newCenter.x, newCenter.y, velocityLine.x2, velocityLine.y2);
-                    collisionResult = new CollisionResult(new Phaser.Geom.Point(newCenter.x, newCenter.y), new Phaser.Math.Vector2(remainingVelocity * Math.cos(reflectionAngle), remainingVelocity * Math.sin(reflectionAngle)));  
+                if (shortestDistanceLineLength > 0) {
+                    let movementLine = new Phaser.Geom.Line(movingCircle.x, movingCircle.y, velocityToSegmentIntersection.point.x, velocityToSegmentIntersection.point.y);
+                    let ratioonmovement = movingCircle.radius / shortestDistanceLineLength;
+                    let newCenter = Phaser.Geom.Line.GetPoint(movementLine, 1 - ratioonmovement);
+                    let closestPoint = Phaser.Geom.Line.GetNearestPoint(staticLine, new Phaser.Geom.Point(newCenter.x, newCenter.y));
+                    let distanceFromNewCenterToCircle = Phaser.Math.Distance.Between(movingCircle.x, movingCircle.y, newCenter.x, newCenter.y);
+                    if (closestPoint.x >= staticLine.left && closestPoint.x <= staticLine.right && closestPoint.y >= staticLine.top && closestPoint.y <= staticLine.bottom && distanceFromNewCenterToCircle < closestCircleDistance) {
+                        gotCollision = true;
+                        closestCircleDistance = distanceFromNewCenterToCircle;
+                        let reflectionAngle = Phaser.Geom.Line.ReflectAngle(velocityLine, staticLine);
+                        let remainingVelocity = Phaser.Math.Distance.Between(newCenter.x, newCenter.y, velocityLine.x2, velocityLine.y2);
+                        collisionResult = new CollisionResult(new Phaser.Geom.Point(newCenter.x, newCenter.y), new Phaser.Math.Vector2(remainingVelocity * Math.cos(reflectionAngle), remainingVelocity * Math.sin(reflectionAngle)));
+                    }
                 }
             }
         });

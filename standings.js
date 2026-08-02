@@ -199,10 +199,10 @@ function displayWeekSchedule(){
                 if(i == 0){
                     document.getElementById("nextOpponent").innerHTML = "You Finished " + (i+1) + "st place";
                 }
-                else if(i == 0){
+                else if(i == 1){
                     document.getElementById("nextOpponent").innerHTML = "You Finished " + (i+1) + "nd place";
                 }
-                else if(i == 0){
+                else if(i == 2){
                     document.getElementById("nextOpponent").innerHTML = "You Finished " + (i+1) + "rd place";
                 }
                 else{
